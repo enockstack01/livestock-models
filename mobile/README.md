@@ -12,8 +12,8 @@ The Queue tab shows both results and flags disagreements. Failures back off (30 
 Set the two API URLs and the access token in the Settings tab (defaults are placeholders: `https://livestock-vision.api.agricoders.com`, `https://llm.api.agricoders.com`).
 
 Layout: `src/core/` pure TypeScript logic (scan, queue, guidance, YOLO decode; 31 Node tests incl. Python parity), `src/api/http.ts` fetch adapter, `src/store/storage.ts` SQLite, `src/ml/` on-device model, `src/screens/` UI.
-**The screens, the storage and HTTP adapters and `App.tsx` have never been compiled or run** (no `npm install`, type-check or device test was possible here). Expect to fix type or API-version errors on first build.
-Extra packages the code imports: `npx expo install expo-sqlite expo-image-picker expo-image-manipulator expo-status-bar react-native-fast-tflite react-native-nitro-modules && npm i jpeg-js`.
+**The screens, the storage and HTTP adapters and `App.tsx` type-check but have never been run on a phone or emulator.** Expect runtime issues on first launch (camera, TFLite loading, SQLite).
+Dependencies are declared in `package.json` (with a lockfile). `npm install && npm run typecheck && npm test` passes: the whole app, including the screens, type-checks under TypeScript strict mode.
 
 The on-device part works with **no internet** after install: the model, the disease knowledge base and all image processing live on the phone.
 

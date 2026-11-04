@@ -3,7 +3,15 @@
   "compilerOptions": {
     "strict": true,
     "resolveJsonModule": true,
-    "allowImportingTsExtensions": true
+    "allowImportingTsExtensions": true,
+    "types": [
+      "node"
+    ]
   },
-  "include": ["App.tsx", "src", "tests", "index.ts"]
+  "include": [
+    "App.tsx",
+    "src",
+    "tests",
+    "index.ts"
+  ]
 }

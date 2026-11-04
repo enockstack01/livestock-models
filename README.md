@@ -30,5 +30,5 @@ For a real Qwen, see `services/livestock_llm/README.md` (set `LLM_API_KEY` in th
 
 ## Status and limits
 - Python tests pass (75). Mobile logic has 31 Node tests (`cd mobile && node --test tests/*.test.ts`); the web helpers have 10.
-- **No real Qwen call has been made** (only mock servers). The mobile screens and adapters have never been compiled or run on a device.
+- **No real Qwen call has been made** (only mock servers). The mobile app type-checks and its logic is tested, but it has never been run on a phone or emulator.
 - Licensing is undecided: Ultralytics YOLO11 is AGPL-3.0, which applies to anything built on it. Choose a license before releasing.

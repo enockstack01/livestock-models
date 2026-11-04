@@ -20,8 +20,8 @@ let modelPromise: Promise<TensorflowModel> | null = null;
 /** Loads the bundled model once. Rejects with a readable message if no trained model has been installed yet. */
 export function loadModel(): Promise<TensorflowModel> {
   if (!MODEL.installed) return Promise.reject(new Error('No trained model is installed in this build yet (see mobile/README.md).'));
-  // core-ml on iOS and the GPU delegate on Android are used when available (see app.json plugin options); CPU otherwise.
-  return (modelPromise ??= loadTensorflowModel(require('../../assets/models/model.tflite'), 'default'));
+  // [] = the default CPU delegate: the safe choice. 'core-ml' / 'android-gpu' can be faster but do not work on every model; benchmark on a device before enabling.
+  return (modelPromise ??= loadTensorflowModel(require('../../assets/models/model.tflite'), []));
 }
 
 /** `srcW`/`srcH` come from the image picker's asset, so no extra decode is needed to read the orientation. */
