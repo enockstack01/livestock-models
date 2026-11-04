@@ -18,9 +18,6 @@ if not os.path.exists(WEIGHTS):                       # local development: fetch
 model = YOLO(WEIGHTS)                                 # loaded on CPU; moved to the GPU inside _infer()
 
 REPORTABLE = {"foot_and_mouth_disease", "lumpy_skin_disease"}
-NOTE = ("**Demo model, not a diagnosis.** It was trained on weak whole-animal labels (one box per photo labelled by the photo's "
-        "condition) and does not locate lesions; foot-and-mouth disease had only 30 training boxes. "
-        "If you suspect disease, isolate the animal and contact a veterinarian or the sector veterinary officer / RAB.")
 
 
 @gpu
@@ -37,11 +34,11 @@ def predict(image, conf):
         raise gr.Error("Upload a photo first.")
     dets = _infer(image, conf)
     boxes = [(xyxy, f"{name.replace('_', ' ')} {score:.0%}") for xyxy, name, score in dets]
-    msg = NOTE
+    msg = ""
     if {name for _, name, _ in dets} & REPORTABLE:
-        msg = "**Possible reportable disease flagged.** Isolate the animal and contact the sector veterinary officer / RAB.\n\n" + NOTE
+        msg = "**Possible reportable disease flagged.** Isolate the animal and contact the sector veterinary officer."
     elif not dets:
-        msg = "Nothing recognised. That does not mean the animal is healthy: retake a closer, well-lit photo, or ask a vet.\n\n" + NOTE
+        msg = "Nothing recognised. That does not mean the animal is healthy: retake a closer, well-lit photo, or ask a vet."
     return (image, boxes), msg
 
 
