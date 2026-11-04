@@ -13,7 +13,7 @@ from livestock_vision.engine import Labels, flags_for            # noqa: E402
 
 pack = AdvicePack(ROOT / "shared" / "advice_pack.json")
 plan = Labels(ROOT / "shared" / "labels.json")
-weak_path = ROOT / "models" / "yolo11x-weak-v1" / "labels.json"
+weak_path = ROOT / "models" / "server-weak-v1" / "labels.json"
 weak = Labels(weak_path) if weak_path.exists() else plan
 
 

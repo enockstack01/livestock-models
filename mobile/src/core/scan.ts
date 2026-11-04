@@ -1,7 +1,7 @@
 // The online/offline brain of the app.
-//   online  (Vision API reachable) -> YOLO11x detects (confirmed) -> LLM API writes the report; if the LLM is down: advice-pack guidance
+//   online  (Vision API reachable) -> the server model detects (confirmed) -> LLM API writes the report; if the LLM is down: advice-pack guidance
 //   offline / anything fails       -> on-device YOLO11n detects ("preliminary"), guidance from the bundled advice pack, photo queued
-//   reconnect                      -> syncQueue sends each queued photo to YOLO11x with the offline result attached; disagreements are reported
+//   reconnect                      -> syncQueue sends each queued photo to the server model with the offline result attached; disagreements are reported
 import { HttpError, NetworkError, TIMEOUTS, type Http } from './http.ts';
 import { flagsFor, offlineGuidance } from './guidance.ts';
 import { disagreements, due, markDone, markFailed, markSyncing, newItem, type QueueItem } from './queue.ts';
@@ -85,7 +85,7 @@ export type SyncEvent =
   | { type: 'offline' };
 export type SyncDeps = { http: Http; queue: { update(i: QueueItem): Promise<void> }; now: () => number };
 
-/** Send every due queued photo to YOLO11x with the offline result attached, then fetch the report. Stops at the first network failure. */
+/** Send every due queued photo to the server model with the offline result attached, then fetch the report. Stops at the first network failure. */
 export async function syncQueue(items: QueueItem[], cfg: Config, deps: SyncDeps): Promise<{ items: QueueItem[]; events: SyncEvent[] }> {
   const events: SyncEvent[] = [];
   const out = new Map(items.map((i) => [i.id, i]));

@@ -14,7 +14,7 @@ from livestock_vision.main import create_app
 from livestock_vision.register import register
 
 SUMMARY = {
-    "model": "yolo11x", "mode": "weak", "gpu": "Tesla T4", "train_minutes": 95.0,
+    "model": "server", "mode": "weak", "gpu": "Tesla T4", "train_minutes": 95.0,
     "warning": "WEAK LABELS: one whole-animal box per photo ...",
     "classes": ["foot_and_mouth_disease", "healthy", "lumpy_skin_disease"],
     "dataset": {"instances_per_class": {"healthy": 600, "lumpy_skin_disease": 200}},
@@ -32,8 +32,8 @@ def make_run(tmp_path, summary=None):
 
 def test_register_writes_card_labels_and_manifest(tmp_path):
     man = tmp_path / "manifest.json"
-    man.write_text(json.dumps({"yolo11x": {"version": None}, "yolo11n": {"latest": None}}))
-    r = register(make_run(tmp_path), "yolo11x-weak-v1", tmp_path / "models", man)
+    man.write_text(json.dumps({"server": {"version": None}, "yolo11n": {"latest": None}}))
+    r = register(make_run(tmp_path), "server-weak-v1", tmp_path / "models", man)
     out = Path(r["dir"])
     labels = json.loads((out / "labels.json").read_text())
     status = {c["name"]: c["status"] for c in labels["classes"]}
@@ -45,16 +45,16 @@ def test_register_writes_card_labels_and_manifest(tmp_path):
     assert card["metrics"]["mAP50"] == 0.91 and card["thresholds"] == {} and "not tuned" in card["thresholds_note"].lower()
     assert any("foot_and_mouth_disease" in w and "cannot detect" in w for w in card["warnings"])      # untrained class is called out
     assert len(card["weights_sha256"]) == 64
-    assert json.loads(man.read_text())["yolo11x"]["version"] == "yolo11x-weak-v1"
+    assert json.loads(man.read_text())["server"]["version"] == "server-weak-v1"
     assert set(r["env"]) == {"VISION_WEIGHTS", "VISION_MODEL_VERSION", "VISION_MODEL_CARD", "LABELS_PATH"}
 
 
 def test_register_registers_yolo11n_under_its_own_manifest_key(tmp_path):
     man = tmp_path / "manifest.json"
-    man.write_text(json.dumps({"yolo11x": {"version": None}, "yolo11n": {"latest": None}}))
+    man.write_text(json.dumps({"server": {"version": None}, "yolo11n": {"latest": None}}))
     register(make_run(tmp_path, {**SUMMARY, "model": "yolo11n"}), "yolo11n-weak-v1", tmp_path / "models", man)
     m = json.loads(man.read_text())
-    assert m["yolo11n"]["latest"] == "yolo11n-weak-v1" and m["yolo11x"]["version"] is None
+    assert m["yolo11n"]["latest"] == "yolo11n-weak-v1" and m["server"]["version"] is None
 
 
 def test_register_refuses_bad_inputs(tmp_path):
@@ -83,7 +83,7 @@ class Fake:
 
 
 def test_api_serves_a_registered_model_and_flags_notifiable(tmp_path):
-    r = register(make_run(tmp_path), "yolo11x-weak-v1", tmp_path / "models", tmp_path / "m.json")
+    r = register(make_run(tmp_path), "server-weak-v1", tmp_path / "models", tmp_path / "m.json")
     env = r["env"]
     s = Settings(data_dir=tmp_path / "d", jwt_secret="s", labels_path=Path(env["LABELS_PATH"]), model_card_path=env["VISION_MODEL_CARD"],
                  model_version=env["VISION_MODEL_VERSION"])
@@ -93,7 +93,7 @@ def test_api_serves_a_registered_model_and_flags_notifiable(tmp_path):
         img = io.BytesIO()
         Image.fromarray(np.random.default_rng(0).integers(0, 255, (200, 300, 3), dtype=np.uint8)).save(img, "JPEG")
         j = c.post("/v1/detect", files={"image": ("a.jpg", img.getvalue(), "image/jpeg")}, headers={"Authorization": f"Bearer {tok}"}).json()
-        assert j["flags"] == ["possible_notifiable_disease"] and j["model_version"] == "yolo11x-weak-v1"
+        assert j["flags"] == ["possible_notifiable_disease"] and j["model_version"] == "server-weak-v1"
         info = c.get("/v1/model", headers={"Authorization": f"Bearer {tok}"}).json()
         assert info["metrics"]["mAP50"] == 0.91
         assert {x["name"]: x["status"] for x in info["classes"]}["foot_and_mouth_disease"] == "untrained"

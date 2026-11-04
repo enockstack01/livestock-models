@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "livestock-vision"
 version = "0.1.0"
-description = "Livestock disease detection: YOLO11x server model, YOLO11n phone model, Qwen report API, web and mobile apps"
+description = "Livestock disease detection: server model, YOLO11n phone model, Qwen report API, web and mobile apps"
 requires-python = ">=3.10"
 dependencies = ["fastapi", "uvicorn[standard]", "httpx", "sqlalchemy", "pydantic", "pillow", "python-multipart", "pyyaml", "numpy"]
 

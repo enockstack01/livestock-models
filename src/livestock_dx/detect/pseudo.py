@@ -1,7 +1,7 @@
 """WEAK, animal-level pseudo-labels from image-level data.
 
 Our classification folders (vetdata/<Species>___<Condition>/*.jpg) say *what condition the animal in the photo has*, not
-*where*. This script runs the COCO-pretrained YOLO11x to find the animal (COCO has horse/sheep/cow, not pig or goat)
+*where*. This script runs the COCO-pretrained labeller to find the animal (COCO has horse/sheep/cow, not pig or goat)
 and writes ONE box around the largest animal, labelled with the folder's condition.
 
 What this is good for: a pipeline test, a diseased-animal detector, and a starting point you can then correct by hand.
@@ -68,7 +68,7 @@ if __name__ == "__main__":
 
     from .dataset import build_dataset
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    ap.add_argument("--weights", default="pretrained/yolo11x.pt")
+    ap.add_argument("--weights", default="pretrained/server-base.pt")
     ap.add_argument("--data-dir", default="vetdata")
     ap.add_argument("--out", default="data_yolo_weak")
     ap.add_argument("--limit-per-class", type=int)

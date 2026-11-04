@@ -1,4 +1,4 @@
-"""Run YOLO11x training on a shared laptop without disturbing anything else on it.
+"""Run server model training on a shared laptop without disturbing anything else on it.
 
   python -m livestock_dx.detect.cpu_run --data data_yolo_weak/dataset.yaml --hours 6
   python -m livestock_dx.detect.cpu_run ... --resume        # continue after a pause / reboot (state is in runs/)

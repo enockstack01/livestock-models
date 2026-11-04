@@ -68,7 +68,7 @@ $('#photo').addEventListener('change', async (e) => {
   } catch { $('#msg').textContent = 'That file could not be read as an image.'; $('#msg').className = 'err'; }
 });
 
-// ---------------------------------------------------------------- detection (Livestock Vision API, YOLO11x)
+// ---------------------------------------------------------------- detection (Livestock Vision API, server model)
 $('#detectBtn').addEventListener('click', async () => {
   if (!S.token) { $('#msg').textContent = 'Open Settings and paste your access token first.'; $('#msg').className = 'err'; return; }
   const fd = new FormData();

@@ -4,10 +4,10 @@ Online/offline livestock disease scanner.
 
 | Situation | Detection | Report |
 |---|---|---|
-| Online (Vision API answers `/ready` within 8 s) | **YOLO11x** on the server | **Qwen** via the LLM API; server advice pack if the LLM fails |
+| Online (Vision API answers `/ready` within 8 s) | **Server model** on the server | **Qwen** via the LLM API; server advice pack if the LLM fails |
 | Offline | **YOLO11n on the phone** | bundled advice pack (same wording as the server fallback, parity-tested) |
 
-Offline scans are saved in a SQLite queue labelled "Preliminary". On app start, on returning to the foreground, and every 30 s while photos wait, they are re-sent to YOLO11x with the phone's result attached.
+Offline scans are saved in a SQLite queue labelled "Preliminary". On app start, on returning to the foreground, and every 30 s while photos wait, they are re-sent to the server model with the phone's result attached.
 The Queue tab shows both results and flags disagreements. Failures back off (30 s, doubling, max 1 h, 8 attempts); a 401 keeps the photo and asks you to sign in again.
 Set the two API URLs and the access token in the Settings tab (defaults are placeholders: `https://livestock-vision.api.agricoders.com`, `https://llm.api.agricoders.com`).
 
@@ -52,11 +52,10 @@ Install the **dynamic (`w8a32`)** file as `mobile/assets/models/model.tflite` an
 `input_layout: nchw`, `output_layout: channels_first`, `input_dtype: float32`, `imgsz: 640`). Prefer it over static INT8 unless a phone benchmark shows INT8 is needed for speed:
 INT8 distorted confidence scores in the check below. **Check one real photo after installing**; if boxes look scrambled, the layout fields in `model.json` are wrong.
 
-## Size and speed: do not ship YOLO11x to phones
-`yolo11x` is 57 M parameters (about 110 MB FP32, about 57 MB INT8). It is the most accurate variant but, even
-quantised, expect seconds per photo on a mid-range phone and high memory use. Fine-tune with `yolo11x` on a GPU
-if you want the best accuracy, but for the phone export **`yolo11s` or `yolo11m`** (train the same data with
-`--weights yolo11s.pt`); at 416 px they run in a fraction of a second. Keep `x` for a server.
+## Size and speed: do not ship the server model to phones
+The server model is large (about 110 MB FP32, about 57 MB INT8). It is the most accurate but, even
+quantised, expect seconds per photo on a mid-range phone and high memory use. For the phone use the small model
+(`yolo11n`, 3 MB), or a mid-size one if you need more accuracy; keep the large model on the server.
 
 ## Offline knowledge base
 `src/data/diseases.json` is loaded into SQLite on first launch (and again when `data_version` increases).

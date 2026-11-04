@@ -13,7 +13,7 @@ def _b(name: str, default: bool = False) -> bool:
 
 @dataclass
 class Settings:
-    weights: str = ""                       # path to the fine-tuned yolo11x .pt (empty -> service starts but is not ready)
+    weights: str = ""                       # path to the fine-tuned server .pt (empty -> service starts but is not ready)
     model_version: str = "unversioned"
     dataset_version: str | None = None
     labels_path: Path = ROOT / "shared" / "labels.json"

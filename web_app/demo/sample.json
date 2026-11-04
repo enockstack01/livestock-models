@@ -1,7 +1,7 @@
 {
  "detection": {
   "diagnosis_id": "lv_0d80a40248ef",
-  "model_version": "yolo11x-weak-v1",
+  "model_version": "server-weak-v1",
   "species": "cattle",
   "detections": [
    {
@@ -117,5 +117,5 @@
   }
  ],
  "chat": "(MOCK assistant, not a real language model) You asked: \"Can I still milk her?\". A real model would answer here. For now: isolate any animal you are worried about, keep it comfortable with shade and clean water, and contact a veterinarian. Suspected foot-and-mouth disease or lumpy skin disease must be reported to the sector veterinary officer / RAB.",
- "note": "Recorded from the live stack: real YOLO11x detection, report from the MOCK LLM (livestock_llm.dev_mock). Photo: Zenodo 11003967 (CC-BY-4.0)."
+ "note": "Recorded from the live stack: real server model detection, report from the MOCK LLM (livestock_llm.dev_mock). Photo: Zenodo 11003967 (CC-BY-4.0)."
 }

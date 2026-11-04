@@ -1,4 +1,4 @@
-"""Package, upload and run the YOLO11x fine-tune on Kaggle's GPUs from this machine.
+"""Package, upload and run the server model fine-tune on Kaggle's GPUs from this machine.
 
   python kaggle_train/launch.py check                          are the Kaggle CLI + credentials in place?
   python kaggle_train/launch.py prepare [--annotated DIR]      build the upload folders (offline, nothing is sent)
@@ -27,16 +27,16 @@ ROOT = Path(__file__).resolve().parents[1]
 UP = ROOT / "kaggle_train" / "_upload"
 KERNEL_DIR = ROOT / "kaggle_train" / "_kernel"
 OUT = ROOT / "runs" / "kaggle"
-YOLO11X_SHA256 = "7bc158aa95c0ebfdd87f70f01653c1131b93e92522dbe15c228bcd742e773a24"
+SERVER_BASE_SHA256 = "7bc158aa95c0ebfdd87f70f01653c1131b93e92522dbe15c228bcd742e773a24"
 YOLO11N_SHA256 = "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1"
 SEP = "___"
 SLUGS = {"weights": "livestock-yolo-weights", "code": "livestock-yolo-code", "data": "livestock-yolo-data",
          "wheels": "livestock-yolo-wheels", "trained": "livestock-yolo-trained", "annotated": "livestock-yolo-annotated"}
 WHEELS = ROOT / "kaggle_train" / "_wheels"
-ULTRALYTICS = "8.4.191"         # keep equal to ULTRALYTICS in train_yolo11x.py
-KERNEL_TITLE = "LivestockDx YOLO11x fine-tune"
-KERNEL_SLUG = "livestockdx-yolo11x-fine-tune"      # Kaggle derives the slug from the title: they must match
-KERNELS = {"yolo11x": {"title": KERNEL_TITLE, "slug": KERNEL_SLUG, "hours": 8.0},
+ULTRALYTICS = "8.4.191"         # keep equal to ULTRALYTICS in train_server.py
+KERNEL_TITLE = "LivestockDx server fine-tune"
+KERNEL_SLUG = "livestockdx-server-fine-tune"      # Kaggle derives the slug from the title: they must match
+KERNELS = {"server": {"title": KERNEL_TITLE, "slug": KERNEL_SLUG, "hours": 8.0},
            "yolo11n": {"title": "LivestockDx YOLO11n fine-tune", "slug": "livestockdx-yolo11n-fine-tune", "hours": 3.0},
            # export-only job: INT8/FP32 TFLite of an already fine-tuned model + the mAP cost of quantisation
            "yolo11n-export": {"title": "LivestockDx YOLO11n export", "slug": "livestockdx-yolo11n-export", "hours": 1.0,
@@ -128,18 +128,18 @@ def prepare(user: str, annotated: Path | None = None, trained: Path | None = Non
 
     w = UP / "weights"
     w.mkdir(parents=True)
-    src = ROOT / "pretrained" / "yolo11x.pt"
+    src = ROOT / "pretrained" / "server-base.pt"
     if not src.exists():
         raise SystemExit(f"{src} not found")
-    if sha256(src) != YOLO11X_SHA256:
-        raise SystemExit("pretrained/yolo11x.pt does not match the pinned SHA-256: refusing to package it")
-    shutil.copyfile(src, w / "yolo11x.pt")
+    if sha256(src) != SERVER_BASE_SHA256:
+        raise SystemExit("pretrained/server-base.pt does not match the pinned SHA-256: refusing to package it")
+    shutil.copyfile(src, w / "server-base.pt")
     n_src = ROOT / "pretrained" / "yolo11n.pt"
     if n_src.exists():
         if sha256(n_src) != YOLO11N_SHA256:
             raise SystemExit("pretrained/yolo11n.pt does not match the pinned SHA-256: refusing to package it")
         shutil.copyfile(n_src, w / "yolo11n.pt")
-    write_meta(w, user, SLUGS["weights"], "LivestockDx YOLO11x weights", "AGPL-3.0")   # Ultralytics' licence
+    write_meta(w, user, SLUGS["weights"], "LivestockDx base weights", "AGPL-3.0")   # Ultralytics' licence
 
     c = UP / "code"
     shutil.copytree(ROOT / "src" / "livestock_dx" / "detect", c / "src" / "livestock_dx" / "detect", ignore=ignore)
@@ -167,7 +167,7 @@ def prepare(user: str, annotated: Path | None = None, trained: Path | None = Non
         raise SystemExit("vetdata/ has no class folders; run the dataset download first")
     write_meta(d, user, SLUGS["data"], "LivestockDx livestock images", "CC-BY-4.0")   # sources: Zenodo CC-BY-4.0 sets
 
-    info = {"images": n, "weights_mb": round((w / "yolo11x.pt").stat().st_size / 1e6)}
+    info = {"images": n, "weights_mb": round((w / "server-base.pt").stat().st_size / 1e6)}
     if trained:                                   # a fine-tuned best.pt to export (kept under its version folder name)
         t = UP / "trained" / Path(trained).parent.name
         t.mkdir(parents=True)
@@ -216,14 +216,14 @@ def wait_datasets_ready(cmd: list[str], slugs: list[str], timeout_s: int = 1800)
         time.sleep(15)
 
 
-def push_kernel(user: str, overrides: dict, accelerator: str = "NvidiaTeslaT4", model: str = "yolo11x") -> None:
+def push_kernel(user: str, overrides: dict, accelerator: str = "NvidiaTeslaT4", model: str = "server") -> None:
     cmd, user = need_ready(user)
     k = KERNELS[model]
     overrides = {**overrides, "model": k.get("cfg_model", model)}
-    kdir = KERNEL_DIR if model == "yolo11x" else KERNEL_DIR.with_name(KERNEL_DIR.name + "_" + model)
+    kdir = KERNEL_DIR if model == "server" else KERNEL_DIR.with_name(KERNEL_DIR.name + "_" + model)
     shutil.rmtree(kdir, ignore_errors=True)
     kdir.mkdir(parents=True)
-    script_name = k.get("script", "train_yolo11x.py")
+    script_name = k.get("script", "train_server.py")
     script = (ROOT / "kaggle_train" / script_name).read_text(encoding="utf-8")
     if overrides:                                       # bake CLI overrides into the pushed copy of the script
         script = script.replace('CONFIG.update(json.loads(os.environ.get("LDX_CONFIG_JSON", "{}")))',
@@ -249,12 +249,12 @@ def push_kernel(user: str, overrides: dict, accelerator: str = "NvidiaTeslaT4", 
     print(f"Started {model}. Watch it at https://www.kaggle.com/code/{user}/{k['slug']}  or run:  python kaggle_train/launch.py status --model {model}")
 
 
-def status(user: str, model: str = "yolo11x") -> None:
+def status(user: str, model: str = "server") -> None:
     cmd, user = need_ready(user)
     run(cmd + ["kernels", "status", f"{user}/{KERNELS[model]['slug']}"])
 
 
-def pull(user: str, model: str = "yolo11x") -> None:
+def pull(user: str, model: str = "server") -> None:
     cmd, user = need_ready(user)
     out = OUT / model
     out.mkdir(parents=True, exist_ok=True)
@@ -281,8 +281,8 @@ def main(argv=None):
         ap.add_argument(f"--{k}", type=int)
     ap.add_argument("--time-hours", type=float)
     ap.add_argument("--task", choices=["detect", "segment"])
-    ap.add_argument("--model", choices=sorted(KERNELS) + ["both"], default="yolo11x",
-                    help="which model to train/watch/pull (default yolo11x; 'both' pushes yolo11x then yolo11n)")
+    ap.add_argument("--model", choices=sorted(KERNELS) + ["both"], default="server",
+                    help="which model to train/watch/pull (default server; 'both' pushes server then yolo11n)")
     ap.add_argument("--accelerator", default="NvidiaTeslaT4", help="Kaggle accelerator id (default: GPU T4 x2; one GPU is used)")
     a = ap.parse_args(argv)
     over = {k: v for k, v in dict(epochs=a.epochs, imgsz=a.imgsz, batch=a.batch, time_hours=a.time_hours, task=a.task).items() if v is not None}
@@ -301,7 +301,7 @@ def main(argv=None):
         prepare(user, a.annotated, a.trained)
     if a.cmd in ("upload", "all"):
         upload(user, a.only)
-    models = ["yolo11x", "yolo11n"] if a.model == "both" else [a.model]              # x first, then n
+    models = ["server", "yolo11n"] if a.model == "both" else [a.model]              # x first, then n
     if a.cmd in ("run", "all"):
         for m in models:
             push_kernel(user, over, a.accelerator, m)

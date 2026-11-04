@@ -1,4 +1,4 @@
-// Offline queue: photos taken without internet wait here and are confirmed by YOLO11x when the phone reconnects.
+// Offline queue: photos taken without internet wait here and are confirmed by the server model when the phone reconnects.
 // Pure state transitions (no storage, no network): persistence is a separate adapter, so every rule is unit-tested.
 import type { Animal, ApiDetection, DetectResponse, Language, ReportResponse } from './types.ts';
 
@@ -43,6 +43,6 @@ export function markFailed(i: QueueItem, err: { status?: number; message: string
 
 export const pendingCount = (items: QueueItem[]) => items.filter((i) => i.status === 'pending' || i.status === 'syncing').length;
 
-/** Items whose YOLO11x confirmation differs from the on-device result: the user should be told. */
+/** Items whose confirmation by the server model differs from the on-device result: the user should be told. */
 export const disagreements = (items: QueueItem[]) =>
   items.filter((i) => i.status === 'done' && i.detection?.offline_comparison && !i.detection.offline_comparison.agrees);

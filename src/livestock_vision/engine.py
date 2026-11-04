@@ -89,7 +89,7 @@ def flags_for(dets: list[dict], labels: Labels) -> list[str]:
 
 
 def compare_offline(online: list[dict], offline: list[dict]) -> dict:
-    """Does the on-device YOLO11n result agree with the YOLO11x result (compared by finding class)?"""
+    """Does the on-device YOLO11n result agree with the server model's result (compared by finding class)?"""
     on, off = {d["class"] for d in online}, {d["class"] for d in offline}
     return {"agrees": on == off, "only_online": sorted(on - off), "only_offline": sorted(off - on)}
 

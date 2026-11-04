@@ -23,13 +23,13 @@ def fake_root(tmp_path, monkeypatch):
     (r / "src/livestock_dx/clean/images.py").write_text("x = 1\n")
     (r / "src/livestock_dx/clean/harmonize.py").write_text("import sqlalchemy\n")
     (r / "configs/yolo_train.yaml").write_text("epochs: 1\n")
-    (r / "pretrained/yolo11x.pt").write_bytes(b"fake weights")
+    (r / "pretrained/server-base.pt").write_bytes(b"fake weights")
     (r / "vetdata/Cattle___Healthy/a.jpg").write_bytes(b"img")
     (r / "vetdata/_symptoms/pmc.jsonl").write_text("{}\n")
     monkeypatch.setattr(launch, "ROOT", r)
     monkeypatch.setattr(launch, "UP", r / "up")
     monkeypatch.setattr(launch, "KERNEL_DIR", r / "kernel")
-    monkeypatch.setattr(launch, "YOLO11X_SHA256", hashlib.sha256(b"fake weights").hexdigest())
+    monkeypatch.setattr(launch, "SERVER_BASE_SHA256", hashlib.sha256(b"fake weights").hexdigest())
     monkeypatch.setattr(launch, "WHEELS", r / "wheels_cache")
     monkeypatch.setattr(launch, "fetch_wheels", lambda d: (d.mkdir(parents=True, exist_ok=True), (d / "ultralytics-0.whl").write_bytes(b"w")))
     return r
@@ -39,7 +39,7 @@ def test_prepare_layout_and_metadata(fake_root):
     info = launch.prepare("alice")
     up = fake_root / "up"
     assert info["images"] == 1
-    assert (up / "weights/yolo11x.pt").exists() and (up / "code/configs/yolo_train.yaml").exists()
+    assert (up / "weights/server-base.pt").exists() and (up / "code/configs/yolo_train.yaml").exists()
     assert (up / "data/Cattle___Healthy/a.jpg").exists()
     assert not (up / "data/_symptoms").exists()                       # text notes are not uploaded
     assert not (up / "code/src/livestock_dx/clean/harmonize.py").exists()   # DB code is not shipped
@@ -51,10 +51,10 @@ def test_prepare_layout_and_metadata(fake_root):
 
 
 def test_prepare_refuses_tampered_weights_and_empty_data(fake_root):
-    (fake_root / "pretrained/yolo11x.pt").write_bytes(b"tampered")
+    (fake_root / "pretrained/server-base.pt").write_bytes(b"tampered")
     with pytest.raises(SystemExit, match="SHA-256"):
         launch.prepare("alice")
-    (fake_root / "pretrained/yolo11x.pt").write_bytes(b"fake weights")
+    (fake_root / "pretrained/server-base.pt").write_bytes(b"fake weights")
     import shutil
     shutil.rmtree(fake_root / "vetdata/Cattle___Healthy")
     with pytest.raises(SystemExit, match="no class folders"):
@@ -118,16 +118,16 @@ def test_upload_creates_private_datasets_then_versions_them(fake_root, recorded)
 def test_kernel_push_metadata_and_overrides(fake_root, recorded):
     calls, _ = recorded
     (fake_root / "kaggle_train").mkdir()
-    real = Path(__file__).resolve().parents[1] / "kaggle_train" / "train_yolo11x.py"
-    (fake_root / "kaggle_train/train_yolo11x.py").write_text(real.read_text(encoding="utf-8"), encoding="utf-8")
+    real = Path(__file__).resolve().parents[1] / "kaggle_train" / "train_server.py"
+    (fake_root / "kaggle_train/train_server.py").write_text(real.read_text(encoding="utf-8"), encoding="utf-8")
     launch.push_kernel("alice", {"epochs": 7, "imgsz": 800})
     meta = json.loads((fake_root / "kernel/kernel-metadata.json").read_text())
     assert meta["enable_gpu"] == "true" and meta["is_private"] == "true" and meta["kernel_type"] == "script"
     assert meta["id"] == f"alice/{launch.KERNEL_SLUG}" and meta["title"] == launch.KERNEL_TITLE
     assert meta["dataset_sources"] == ["alice/livestock-yolo-weights", "alice/livestock-yolo-code", "alice/livestock-yolo-wheels", "alice/livestock-yolo-data"]
-    script = (fake_root / "kernel/train_yolo11x.py").read_text(encoding="utf-8")
+    script = (fake_root / "kernel/train_server.py").read_text(encoding="utf-8")
     ast.parse(script)                                                            # still valid Python after baking overrides
-    assert "'epochs': 7" in script and "'imgsz': 800" in script and "'model': 'yolo11x'" in script
+    assert "'epochs': 7" in script and "'imgsz': 800" in script and "'model': 'server'" in script
     assert calls[-1][1:3] == ["kernels", "push"]
     assert calls[-1][calls[-1].index("--accelerator") + 1] == "NvidiaTeslaT4"
     assert int(calls[-1][calls[-1].index("-t") + 1]) == int(8.0 * 3600 + 5400)
@@ -137,8 +137,8 @@ def test_push_fails_loudly_if_kaggle_drops_a_dataset(fake_root, recorded):
     calls, state = recorded
     state["push_output"] = "The following are not valid dataset sources and could not be added to the kernel: ['alice/x']"
     (fake_root / "kaggle_train").mkdir()
-    real = Path(__file__).resolve().parents[1] / "kaggle_train" / "train_yolo11x.py"
-    (fake_root / "kaggle_train/train_yolo11x.py").write_text(real.read_text(encoding="utf-8"), encoding="utf-8")
+    real = Path(__file__).resolve().parents[1] / "kaggle_train" / "train_server.py"
+    (fake_root / "kaggle_train/train_server.py").write_text(real.read_text(encoding="utf-8"), encoding="utf-8")
     with pytest.raises(SystemExit, match="did not attach every dataset"):
         launch.push_kernel("alice", {})
 
@@ -152,25 +152,25 @@ def test_slug_matches_title_for_every_model():
 def test_yolo11n_kernel_is_separate_and_gets_its_own_budget(fake_root, recorded):
     calls, _ = recorded
     (fake_root / "kaggle_train").mkdir()
-    real = Path(__file__).resolve().parents[1] / "kaggle_train" / "train_yolo11x.py"
-    (fake_root / "kaggle_train/train_yolo11x.py").write_text(real.read_text(encoding="utf-8"), encoding="utf-8")
-    launch.push_kernel("alice", {}, model="yolo11x")
+    real = Path(__file__).resolve().parents[1] / "kaggle_train" / "train_server.py"
+    (fake_root / "kaggle_train/train_server.py").write_text(real.read_text(encoding="utf-8"), encoding="utf-8")
+    launch.push_kernel("alice", {}, model="server")
     launch.push_kernel("alice", {}, model="yolo11n")
-    metas = {m: json.loads(((fake_root / ("kernel" if m == "yolo11x" else "kernel_yolo11n")) / "kernel-metadata.json").read_text())
-             for m in ("yolo11x", "yolo11n")}
-    assert metas["yolo11x"]["id"] != metas["yolo11n"]["id"] and metas["yolo11n"]["id"] == "alice/livestockdx-yolo11n-fine-tune"
-    assert metas["yolo11n"]["dataset_sources"] == metas["yolo11x"]["dataset_sources"]      # same weights/data/code datasets
+    metas = {m: json.loads(((fake_root / ("kernel" if m == "server" else "kernel_yolo11n")) / "kernel-metadata.json").read_text())
+             for m in ("server", "yolo11n")}
+    assert metas["server"]["id"] != metas["yolo11n"]["id"] and metas["yolo11n"]["id"] == "alice/livestockdx-yolo11n-fine-tune"
+    assert metas["yolo11n"]["dataset_sources"] == metas["server"]["dataset_sources"]      # same weights/data/code datasets
     pushes = [c for c in calls if c[1:3] == ["kernels", "push"]]
     assert int(pushes[0][pushes[0].index("-t") + 1]) == int(8.0 * 3600 + 5400)
     assert int(pushes[1][pushes[1].index("-t") + 1]) == int(3.0 * 3600 + 5400)              # the nano model gets a short budget
-    assert "'model': 'yolo11n'" in (fake_root / "kernel_yolo11n/train_yolo11x.py").read_text(encoding="utf-8")
+    assert "'model': 'yolo11n'" in (fake_root / "kernel_yolo11n/train_server.py").read_text(encoding="utf-8")
 
 
-def test_notebook_labels_with_yolo11x_even_when_training_yolo11n():
-    """Both models must train on the SAME pseudo-labelled data, so the labeller is always the COCO yolo11x."""
-    src = (Path(__file__).resolve().parents[1] / "kaggle_train" / "train_yolo11x.py").read_text(encoding="utf-8")
-    assert 'str(inp["label_weights"])' in src and 'find_one("yolo11x.pt"' in src
-    assert 'PER_MODEL = {"yolo11x"' in src and '"yolo11n": {"batch": 32' in src
+def test_notebook_labels_with_server_even_when_training_yolo11n():
+    """Both models must train on the SAME pseudo-labelled data, so the labeller is always the COCO server."""
+    src = (Path(__file__).resolve().parents[1] / "kaggle_train" / "train_server.py").read_text(encoding="utf-8")
+    assert 'str(inp["label_weights"])' in src and 'find_one("server-base.pt"' in src
+    assert 'PER_MODEL = {"server"' in src and '"yolo11n": {"batch": 32' in src
     assert "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1" in src       # yolo11n checksum pinned
 
 
@@ -186,7 +186,7 @@ def test_code_bundle_imports_without_side_effects(tmp_path):
 def test_export_job_packages_trained_weights_and_uses_its_own_script(fake_root, recorded, tmp_path):
     calls, _ = recorded
     (fake_root / "kaggle_train").mkdir()
-    for name in ("train_yolo11x.py", "export_litert.py"):
+    for name in ("train_server.py", "export_litert.py"):
         real = Path(__file__).resolve().parents[1] / "kaggle_train" / name
         (fake_root / "kaggle_train" / name).write_text(real.read_text(encoding="utf-8"), encoding="utf-8")
     w = tmp_path / "yolo11n-weak-v1"

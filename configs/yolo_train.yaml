@@ -1,13 +1,13 @@
-# YOLO11x fine-tuning for livestock pathology. Every key is passed straight to ultralytics `model.train()`.
+# Server-model fine-tuning for livestock pathology. Every key is passed straight to ultralytics `model.train()`.
 # Run:  python -m livestock_dx.detect.train --data data_yolo/dataset.yaml            (GPU strongly advised)
-#       add --task segment to start from yolo11x-seg.pt and train on polygon masks.
+#       add --task segment to start from server-base-seg.pt and train on polygon masks.
 
 # ---- model / schedule -------------------------------------------------------------------------------------
 epochs: 120               # 100-150 recommended; patience stops early if val mAP stalls
 patience: 30
 imgsz: 640                # use 1024 to catch individual ticks / early nodules (needs ~2.5x the GPU memory)
 multi_scale: 0.5          # float in this ultralytics version: sizes vary by +-50 % around imgsz each batch -> distance robustness
-batch: 8                  # yolo11x at 640 fits ~8 on a 16 GB GPU; lower it on smaller cards (-1 = auto)
+batch: 8                  # server at 640 fits ~8 on a 16 GB GPU; lower it on smaller cards (-1 = auto)
 optimizer: SGD            # or AdamW (then use lr0: 0.001); 'auto' lets ultralytics choose
 lr0: 0.01                 # initial learning rate
 lrf: 0.01                 # final lr = lr0 * lrf

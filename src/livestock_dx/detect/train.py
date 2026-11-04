@@ -1,4 +1,4 @@
-"""Fine-tune YOLO11x.   python -m livestock_dx.detect.train --data data_yolo/dataset.yaml [--task segment]
+"""Fine-tune server model.   python -m livestock_dx.detect.train --data data_yolo/dataset.yaml [--task segment]
 
 Hyper-parameters live in configs/yolo_train.yaml; CLI flags override them (e.g. --epochs 1 --imgsz 320 for a smoke test).
 """
@@ -10,7 +10,7 @@ from pathlib import Path
 import yaml
 
 ROOT = Path(__file__).resolve().parents[3]
-WEIGHTS = {"detect": ROOT / "pretrained" / "yolo11x.pt", "segment": ROOT / "pretrained" / "yolo11x-seg.pt"}
+WEIGHTS = {"detect": ROOT / "pretrained" / "server-base.pt", "segment": ROOT / "pretrained" / "server-base-seg.pt"}
 
 
 def load_hyp(path: Path = ROOT / "configs" / "yolo_train.yaml") -> dict:
@@ -18,11 +18,10 @@ def load_hyp(path: Path = ROOT / "configs" / "yolo_train.yaml") -> dict:
 
 
 def ensure_weights(task: str) -> Path:
-    """yolo11x.pt is pinned and hash-checked at download time; the -seg weights come from the same repo."""
+    """The COCO-pretrained base weights are a file you provide (see kaggle_train/README.md); nothing is downloaded behind your back."""
     w = WEIGHTS[task]
     if not w.exists():
-        from huggingface_hub import hf_hub_download
-        hf_hub_download("Ultralytics/YOLO11", w.name, local_dir=str(w.parent))
+        raise SystemExit(f"{w} not found: place the COCO-pretrained base weights there (the Kaggle launcher checks their SHA-256).")
     return w
 
 

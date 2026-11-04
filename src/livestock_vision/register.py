@@ -1,6 +1,6 @@
 """Register a fine-tuned model from a Kaggle run so the Vision API can serve it.
 
-  python -m livestock_vision.register --run-dir runs/kaggle/yolo11x --version yolo11x-livestock-weak-v1 [--models-dir models]
+  python -m livestock_vision.register --run-dir runs/kaggle/server --version server-livestock-weak-v1 [--models-dir models]
 
 Reads the run's best.pt + run_summary.json and writes   models/<version>/{best.pt, model_card.json, labels.json}
 and updates shared/model_manifest.json. Prints the environment variables that make the API serve it.
@@ -78,9 +78,9 @@ def register(run_dir: Path, version: str, models_dir: Path, manifest_path: Path 
 
     mp = Path(manifest_path or ROOT / "shared" / "model_manifest.json")
     man = json.loads(mp.read_text(encoding="utf-8")) if mp.exists() else {}
-    key = "yolo11n" if (summary.get("model") == "yolo11n") else "yolo11x"
+    key = "yolo11n" if (summary.get("model") == "yolo11n") else "server"
     entry = man.setdefault(key, {})
-    if key == "yolo11x":
+    if key == "server":
         entry.update(version=version, dataset_version=card["weights_sha256"][:12], weights=(out / "best.pt").as_posix())
     else:
         entry.update(latest=version, weights=(out / "best.pt").as_posix())

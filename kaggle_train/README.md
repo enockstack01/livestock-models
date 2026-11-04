@@ -1,4 +1,4 @@
-# Fine-tune YOLO11x on Kaggle (GPU) instead of this laptop
+# Fine-tune the server model on Kaggle (GPU) instead of this laptop
 
 Kaggle gives free GPU notebooks (T4 / P100, roughly 30 GPU-hours a week, sessions of about 9 to 12 hours). The
 laptop only packages, uploads and downloads; the training itself runs on Kaggle under **your** account.
@@ -21,13 +21,15 @@ python kaggle_train/launch.py pull                     # downloads best.pt, last
 python kaggle_train/launch.py all --annotated path/to/yolo_export
 # options baked into the notebook:  --epochs 120 --imgsz 640 --batch 6 --time-hours 8 --task detect|segment
 ```
-What gets uploaded (all private by default): `yolo11x.pt` (SHA-256 checked first), the small `detect` code package,
+What gets uploaded (all private by default): `server-base.pt` (SHA-256 checked first), the small `detect` code package,
+
+**Base weights:** the launcher expects the COCO-pretrained Ultralytics large-variant weights at `pretrained/server-base.pt` (and the small ones at `pretrained/yolo11n.pt`), and refuses to upload them unless their SHA-256 matches the pinned value in `launch.py`. Nothing is downloaded automatically.
 and the 1,865 training photos in `vetdata/` (CC-BY-4.0 Zenodo datasets: keep their attribution if you ever make the data public).
 
-## What the notebook does (`train_yolo11x.py`)
-1. refuses to run without a GPU (so it never silently trains YOLO11x on a Kaggle CPU for hours), and re-checks the weights' SHA-256;
+## What the notebook does (`train_server.py`)
+1. refuses to run without a GPU (so it never silently trains the server model on a Kaggle CPU for hours), and re-checks the weights' SHA-256;
 2. **annotated mode** if an annotated dataset is attached: validates every label line, removes near-duplicate images, hash-splits train/val;
-   **weak mode** otherwise: the COCO YOLO11x boxes one animal per photo and labels it with the folder's condition;
+   **weak mode** otherwise: the COCO labeller boxes one animal per photo and labels it with the folder's condition;
 3. fine-tunes with `configs/yolo_train.yaml` (imgsz 640, multi-scale, SGD 0.01 → cosine, warm-up, mosaic/mixup/HSV, cls loss 1.0), capped at `time_hours` so
    the schedule finishes inside the session; halves the batch automatically on CUDA out-of-memory;
 4. saves the weights **first**, then validation metrics (`run_summary.json`), then best-effort ONNX and INT8 LiteRT/`.tflite` exports (a failed export never loses the weights).
@@ -47,7 +49,7 @@ and the 1,865 training photos in `vetdata/` (CC-BY-4.0 Zenodo datasets: keep the
 - Ship `yolo11s`/`yolo11m` on phones, not `x` (see `mobile/README.md`).
 
 ## Models and jobs
-`launch.py run --model yolo11x|yolo11n|both` trains either model on the SAME pseudo-labelled data (both are labelled by the COCO YOLO11x). `pull` fetches only the
+`launch.py run --model server|yolo11n|both` trains either model on the SAME pseudo-labelled data (both are labelled by the COCO labeller). `pull` fetches only the
 weights, results and logs (a plain download of the notebook output would fetch thousands of dataset images one request at a time).
 `prepare --trained models/<version>/best.pt` + `upload --only trained` + `run --model yolo11n-export` exports a fine-tuned model to LiteRT (FP32, static INT8, dynamic) and
 scores each on the same validation split. Lessons that cost runs: unverified phone = no GPU and no internet; ultralytics ignores `batch` for a long list of paths (chunk it yourself);

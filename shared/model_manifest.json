@@ -1,9 +1,9 @@
 {
   "note": "Versions the apps and servers compare against. Null = nothing trained/released yet. Update on every release (see the release checklist in the master plan).",
-  "yolo11x": {
-    "version": "yolo11x-weak-v1",
+  "server": {
+    "version": "server-weak-v1",
     "dataset_version": "b60384596e2c",
-    "weights": "models/yolo11x-weak-v1/best.pt"
+    "weights": "models/server-weak-v1/best.pt"
   },
   "yolo11n": {
     "latest": "yolo11n-weak-v1",

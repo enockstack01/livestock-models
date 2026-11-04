@@ -1,10 +1,10 @@
 # Models
 
-Only two fine-tuned models are part of this project. Weights are **not** in git (the YOLO11x file is 110 MB); download them from Hugging Face.
+Only two fine-tuned models are part of this project. Weights are **not** in git (the server model file is 110 MB); download them from Hugging Face.
 
 | Model | Role | Folder | Weights |
 |---|---|---|---|
-| YOLO11x (`yolo11x-weak-v1`) | server detector behind the Vision API | `yolo11x-weak-v1/` | https://huggingface.co/enockstack/livestock-yolo11x |
+| Server model (`server-weak-v1`) | server detector behind the Vision API | `server-weak-v1/` | https://huggingface.co/enockstack/livestock-detector |
 | YOLO11n (`yolo11n-weak-v1`) | on-device detector in the mobile app (exported to `.tflite`, bundled at `mobile/assets/models/`) | `yolo11n-weak-v1/` | `mobile/assets/models/model.tflite` (3 MB) |
 
 Each folder holds `labels.json` and `model_card.json` (training run, dataset counts, SHA-256 of the weights).

@@ -65,7 +65,7 @@ def seed(tmp_path, did=DID, user="farmer-1", dets=None, flags=None, district="Hu
     for d in dets:
         summary[d["class"]] = summary.get(d["class"], 0) + 1
     with make_session_factory(s.db_url)() as db:
-        db.add(Detection(id=did, user_id=user, species="cattle", district=district, animal_id="cow-7", model_version="yolo11x-test",
+        db.add(Detection(id=did, user_id=user, species="cattle", district=district, animal_id="cow-7", model_version="server-test",
                          image_path="", annotated_path="", detections=json.dumps(dets), summary=json.dumps(summary),
                          flags=json.dumps(flags if flags is not None else ["possible_notifiable_disease"]), latency_ms=1.0, disagreement=False))
         db.commit()

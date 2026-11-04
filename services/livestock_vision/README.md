@@ -1,14 +1,14 @@
 # Livestock Vision API (Service A)
 
-FastAPI service that hosts the fine-tuned YOLO11x and implements `/v1/detect`, `/v1/feedback`, `/v1/model`, `/health`, `/ready`
+FastAPI service that hosts the fine-tuned server model and implements `/v1/detect`, `/v1/feedback`, `/v1/model`, `/health`, `/ready`
 from the Logistack master plan (Part 3). Code: `src/livestock_vision/`. Shared class files: `shared/labels.json`,
 `shared/livestock.yaml`, `shared/model_manifest.json` (training, API and apps must all read these).
 
 ```bash
 # 1. register a fine-tuned model from a Kaggle run (writes models/<version>/{best.pt,labels.json,model_card.json} + updates shared/model_manifest.json)
-python -m livestock_vision.register --run-dir runs/kaggle/yolo11x --version yolo11x-weak-v1
+python -m livestock_vision.register --run-dir runs/kaggle/server --version server-weak-v1
 # 2. serve it. Local testing: --dev makes a random secret and prints a token (open /docs, Authorize, paste it)
-PYTHONPATH=src python -m livestock_vision.serve --version yolo11x-weak-v1 --port 8001 --dev
+PYTHONPATH=src python -m livestock_vision.serve --version server-weak-v1 --port 8001 --dev
 # production: AGRICODERS_JWT_SECRET=<secret shared with the Agricoders login service> DATABASE_URL=postgresql+psycopg2://... python -m livestock_vision.serve --version ... --host 0.0.0.0
 ```
 Optional: `VISION_MODEL_CARD` (JSON `{"thresholds": {"tick": 0.45}, "metrics": {...}}`: per-class thresholds, default 0.35), `VISION_CONF`,
@@ -19,7 +19,7 @@ Optional: `VISION_MODEL_CARD` (JSON `{"thresholds": {"tick": 0.45}, "metrics": {
 - **JWT (HS256) auth** on every `/v1` route, fail-closed: no secret configured means 503, never open. `alg=none`, wrong signature, expired and
   expiry-less tokens are rejected. Roles `vet`/`admin` may read other users' records; everyone else gets 404 for records that are not theirs.
 - **Never serves the wrong model.** At startup the model's class names must all exist in `labels.json`. A generic COCO model is refused
-  (`/ready` 503 with the reason, `/v1/detect` 503 `model_not_ready`); `/health` stays 200. Checked against the real downloaded `yolo11x.pt`.
+  (`/ready` 503 with the reason, `/v1/detect` 503 `model_not_ready`); `/health` stays 200. Checked against the real downloaded `server-base.pt`.
 - **One model instance, one worker thread** (a test proves 6 concurrent requests never overlap inside the model). Run one uvicorn worker per container.
 - **Input handling**: decodes the upload (never trusts filename/content-type), JPEG/PNG/WebP only, 10 MB limit, min 64 px, longest side capped at 1280,
   decompression-bomb guard, **EXIF/GPS stripped** from the stored copy. Species must be one of `labels.json`'s list.
@@ -36,7 +36,7 @@ Optional: `VISION_MODEL_CARD` (JSON `{"thresholds": {"tick": 0.45}, "metrics": {
 - `save_detection` is implemented (SQLAlchemy, SQLite by default). The `diagnosis_id` is the key the LLM API reads.
 - Species is a request field, not a detector class. If you want species *detection*, add classes with new ids.
 
-## Measured with the real fine-tuned YOLO11x (`yolo11x-weak-v1`, 2026-11-02)
+## Measured with the real fine-tuned server model (`server-weak-v1`, 2026-11-02)
 The running service (real HTTP, real weights, CPU) was scored on the exact 191 validation photos from the Kaggle run, with their ground-truth boxes, at the plan's 0.35 threshold:
 **precision 0.747, recall 0.775** overall (TP 148, FP 50, FN 43); per class: healthy P 0.76 / R 0.82, lumpy skin disease P 0.85 / R 0.64, FMD P 0.50 / R 0.62 (only 13 validation boxes: noise).
 This agrees with the training-time numbers (mAP50 0.807, mAP50-95 0.566). **CPU latency is about 1.1 s per photo**; the plan's ~60 ms assumes an L4 GPU, which was not measured. The model was trained on weak

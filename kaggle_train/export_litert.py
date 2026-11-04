@@ -1,6 +1,6 @@
 """Kaggle script: export a trained YOLO11 model to TFLite (LiteRT) FP32 + INT8 and measure what quantisation costs.
 
-Inputs (attached datasets): livestock-yolo-code, livestock-yolo-data, livestock-yolo-weights (for the COCO yolo11x labeller),
+Inputs (attached datasets): livestock-yolo-code, livestock-yolo-data, livestock-yolo-weights (for the COCO server labeller),
 livestock-yolo-trained (the fine-tuned best.pt to export).  Needs Internet (pip) and Linux x86: both true on a verified Kaggle notebook.
 
 Why a subprocess + --target: litert-torch pulls its own torch pins. Installing them into an isolated folder and running the export
@@ -22,7 +22,7 @@ INPUT = Path(os.environ.get("KAGGLE_INPUT_DIR", "/kaggle/input"))
 WORK = Path(os.environ.get("KAGGLE_WORKING_DIR", "/kaggle/working"))
 CONFIG.update(json.loads(os.environ.get("LDX_CONFIG_JSON", "{}")))
 ULTRALYTICS = "8.4.191"
-SHA256 = {"yolo11x.pt": "7bc158aa95c0ebfdd87f70f01653c1131b93e92522dbe15c228bcd742e773a24"}
+SHA256 = {"server-base.pt": "7bc158aa95c0ebfdd87f70f01653c1131b93e92522dbe15c228bcd742e773a24"}
 os.environ.setdefault("YOLO_AUTOINSTALL", "False")
 os.environ.setdefault("YOLO_CONFIG_DIR", str(WORK / ".yolo_config"))
 
@@ -95,9 +95,9 @@ def main():
     sys.path.insert(0, str(src_dir))
     ensure_ultralytics()
     trained = find_one("best.pt", "livestock-yolo-trained (a dataset holding the fine-tuned best.pt)")
-    labeller = find_one("yolo11x.pt", "livestock-yolo-weights (COCO yolo11x labeller)")
-    if sha256(labeller) != SHA256["yolo11x.pt"]:
-        raise SystemExit("yolo11x.pt checksum mismatch")
+    labeller = find_one("server-base.pt", "livestock-yolo-weights (COCO server labeller)")
+    if sha256(labeller) != SHA256["server-base.pt"]:
+        raise SystemExit("server-base.pt checksum mismatch")
     data_dirs = sorted({Path(p).parent.parent for p in glob.glob(str(INPUT / "**" / "*___*" / "*.jpg"), recursive=True)})
     if not data_dirs:
         raise SystemExit("livestock-yolo-data not attached")

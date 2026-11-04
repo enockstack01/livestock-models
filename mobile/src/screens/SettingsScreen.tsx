@@ -15,7 +15,7 @@ export function SettingsScreen({ settings, onSaved }: { settings: Settings; onSa
     <ScrollView contentContainerStyle={s.screen}>
       <View style={s.card}>
         <Text style={s.h2}>Server connection</Text>
-        <Text style={s.label}>Vision API (YOLO11x)</Text>
+        <Text style={s.label}>Vision API (server model)</Text>
         <TextInput style={s.input} autoCapitalize="none" autoCorrect={false} value={v.visionUrl} onChangeText={set('visionUrl')} />
         <Text style={s.label}>Report API (Qwen)</Text>
         <TextInput style={s.input} autoCapitalize="none" autoCorrect={false} value={v.llmUrl} onChangeText={set('llmUrl')} />
@@ -36,7 +36,7 @@ export function SettingsScreen({ settings, onSaved }: { settings: Settings; onSa
       <View style={s.card}>
         <Text style={s.h2}>On-device model</Text>
         <Text style={s.li}>{MODEL.installed ? `Installed: ${MODEL.version ?? 'unknown version'}` : 'No model bundled in this build.'}</Text>
-        <Text style={s.muted}>Used automatically when the Vision API cannot be reached. Photos taken that way are re-checked by YOLO11x when you are back online.</Text>
+        <Text style={s.muted}>Used automatically when the Vision API cannot be reached. Photos taken that way are re-checked by the server model when you are back online.</Text>
       </View>
     </ScrollView>
   );

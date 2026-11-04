@@ -66,7 +66,7 @@ def photo(fmt="JPEG", size=(320, 240), seed=1, exif=False):
 
 
 def make_settings(tmp_path, **kw):
-    base = dict(data_dir=tmp_path / "data", jwt_secret=SECRET, public_base_url="http://test", model_version="yolo11x-test-v1")
+    base = dict(data_dir=tmp_path / "data", jwt_secret=SECRET, public_base_url="http://test", model_version="server-test-v1")
     base.update(kw)
     return Settings(**base)
 
@@ -108,7 +108,7 @@ def test_auth_rejects_bad_tokens(client):
                 base64.urlsafe_b64encode(json.dumps({"sub": "x", "exp": time.time() + 99}).encode()).rstrip(b"=").decode() + ".")
     assert client.get("/v1/model", headers={"Authorization": f"Bearer {none_alg}"}).status_code == 401   # alg=none attack
     ok = client.get("/v1/model", headers=auth())
-    assert ok.status_code == 200 and ok.json()["model_version"] == "yolo11x-test-v1"
+    assert ok.status_code == 200 and ok.json()["model_version"] == "server-test-v1"
     assert client.get("/health").json() == {"status": "ok"} and client.get("/ready").status_code == 200   # probes need no token
 
 
@@ -132,7 +132,7 @@ def test_detect_happy_path(client):
     assert r.status_code == 200, r.text
     j = r.json()
     assert j["diagnosis_id"].startswith("lv_") and len(j["diagnosis_id"]) == 15
-    assert j["model_version"] == "yolo11x-test-v1" and j["species"] == "cattle"
+    assert j["model_version"] == "server-test-v1" and j["species"] == "cattle"
     assert j["summary"] == {"skin_nodule": 1, "tick": 1}
     assert j["flags"] == ["possible_notifiable_disease"]                   # skin nodules may mean LSD
     assert set(j["detections"][0]) == {"class", "confidence", "box"} and j["latency_ms"] >= 0

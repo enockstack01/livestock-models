@@ -62,6 +62,6 @@ def export_corrections(settings: Settings, out: Path, only_disagreements: bool =
 if __name__ == "__main__":
     ap = argparse.ArgumentParser(description=__doc__)
     ap.add_argument("--out", required=True)
-    ap.add_argument("--only-disagreements", action="store_true", help="only photos where YOLO11n and YOLO11x disagreed")
+    ap.add_argument("--only-disagreements", action="store_true", help="only photos where YOLO11n and server model disagreed")
     a = ap.parse_args()
     print(export_corrections(Settings.from_env(), Path(a.out), a.only_disagreements))

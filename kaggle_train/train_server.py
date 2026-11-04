@@ -1,13 +1,13 @@
-"""Kaggle notebook/script: fine-tune YOLO11x on a Kaggle GPU for livestock pathology.
+"""Kaggle notebook/script: fine-tune the server model on a Kaggle GPU for livestock pathology.
 
 Attach these (private) datasets to the notebook; kaggle_train/launch.py creates and attaches them for you:
-  livestock-yolo-weights    yolo11x.pt  (COCO-pretrained, SHA-256 verified before upload)
+  livestock-yolo-weights    server-base.pt  (COCO-pretrained, SHA-256 verified before upload)
   livestock-yolo-code       src/livestock_dx + configs/yolo_train.yaml
   livestock-yolo-data       class folders  <Species>___<Condition>/*.jpg  (image-level labels)
   livestock-yolo-annotated  OPTIONAL: a YOLO export  images/ labels/ classes.txt  (real boxes or polygons)
 
 Mode 'annotated' (if livestock-yolo-annotated is attached): trains on your real lesion boxes/masks.  <- what you want
-Mode 'weak' (otherwise): COCO YOLO11x boxes ONE whole animal per photo and labels it with the folder's condition.
+Mode 'weak' (otherwise): COCO labeller boxes ONE whole animal per photo and labels it with the folder's condition.
   That is a diseased-ANIMAL detector, not a lesion detector, and photos with no animal found (e.g. FMD mouth/hoof
   close-ups) get no label at all. It exists so the pipeline can run before annotations do.
 Everything is written to /kaggle/working (kept as the notebook's output), including run_summary.json.
@@ -22,9 +22,9 @@ import time
 from pathlib import Path
 
 CONFIG = dict(
-    model="yolo11x",         # yolo11x (server) | yolo11n (phone): same data, same classes, different weights
+    model="server",         # server (server) | yolo11n (phone): same data, same classes, different weights
     mode="auto",             # auto | annotated | weak
-    task="detect",           # detect | segment (segment needs polygon labels; starts from yolo11x-seg.pt)
+    task="detect",           # detect | segment (segment needs polygon labels; starts from server-base-seg.pt)
     imgsz=640,               # 1024 for tiny lesions/ticks if memory allows (lower batch)
     epochs=120,
     time_hours="auto",       # wall-clock cap so the schedule finishes inside Kaggle's session limit (None = epochs only)
@@ -33,10 +33,10 @@ CONFIG = dict(
     weak_conf=0.35,          # COCO detector confidence for the weak boxes
     weak_limit_per_class=None,
     export=["onnx", "litert"],   # litert = .tflite for the mobile app (INT8); best-effort; failures are logged, never fatal
-    allow_cpu=False,         # refuse to silently train YOLO11x on a Kaggle CPU for hours
+    allow_cpu=False,         # refuse to silently train the server model on a Kaggle CPU for hours
     dry_run=False,           # build the dataset and stop (no training)
 )
-PER_MODEL = {"yolo11x": {"batch": 6, "time_hours": 8.0},       # x at 640 + multi-scale on a 16 GB T4
+PER_MODEL = {"server": {"batch": 6, "time_hours": 8.0},       # x at 640 + multi-scale on a 16 GB T4
              "yolo11n": {"batch": 32, "time_hours": 3.0}}      # n is tiny: big batches, short schedule
 # Local testing / overrides:  KAGGLE_INPUT_DIR, KAGGLE_WORKING_DIR, LDX_CONFIG_JSON='{"epochs":1,"imgsz":320,...}'
 INPUT = Path(os.environ.get("KAGGLE_INPUT_DIR", "/kaggle/input"))
@@ -48,7 +48,8 @@ for _k, _v in PER_MODEL[CONFIG["model"]].items():
     if CONFIG[_k] in (None, "auto") and not (_k == "time_hours" and CONFIG[_k] is None):
         CONFIG[_k] = _v
 # Pinned Ultralytics/YOLO11 release a01aaa06...: SHA-256 as published by Hugging Face
-SHA256 = {"yolo11x.pt": "7bc158aa95c0ebfdd87f70f01653c1131b93e92522dbe15c228bcd742e773a24",
+BASE_FILE = {"server": "server-base.pt", "yolo11n": "yolo11n.pt"}      # starting weights per model, as packaged by launch.py
+SHA256 = {"server-base.pt": "7bc158aa95c0ebfdd87f70f01653c1131b93e92522dbe15c228bcd742e773a24",
           "yolo11n.pt": "0ebbc80d4a7680d14987a577cd21342b65ecfd94632bd9a8da63ae6417644ee1"}
 
 
@@ -133,12 +134,13 @@ def ensure_ultralytics() -> bool:
 
 def locate_inputs() -> dict:
     code_src = find_one("src/livestock_dx/__init__.py", "livestock-yolo-code").parents[1]
-    weights_name = f"{CONFIG['model']}-seg.pt" if CONFIG["task"] == "segment" else f"{CONFIG['model']}.pt"
+    base = BASE_FILE[CONFIG["model"]]
+    weights_name = base.replace(".pt", "-seg.pt") if CONFIG["task"] == "segment" else base
     weights = find_one(weights_name, "livestock-yolo-weights", required=False)
     if weights is None:
         raise SystemExit(f"{weights_name} not found in the attached datasets. Add it to livestock-yolo-weights.")
-    # the weak labels always come from the COCO YOLO11x, so yolo11x and yolo11n train on the SAME dataset
-    label_weights = find_one("yolo11x.pt", "livestock-yolo-weights", required=False)
+    # the weak labels always come from the COCO labeller, so server and yolo11n train on the SAME dataset
+    label_weights = find_one("server-base.pt", "livestock-yolo-weights", required=False)
     for w in (weights, label_weights):
         if w is not None and w.name in SHA256 and sha256(w) != SHA256[w.name]:
             raise SystemExit(f"{w.name} checksum mismatch: refusing to load an unverified pickle checkpoint.")
@@ -200,7 +202,7 @@ def main():
         if CONFIG["task"] != "detect":
             raise SystemExit("weak mode produces boxes only; use task='detect', or attach real polygon annotations for 'segment'")
         if inp["label_weights"] is None:
-            raise SystemExit("yolo11x.pt (the COCO labeller) must be in livestock-yolo-weights, even when training yolo11n")
+            raise SystemExit("server-base.pt (the COCO labeller) must be in livestock-yolo-weights, even when training yolo11n")
         classes, pst = pseudo_label_animals(str(inp["label_weights"]), inp["data"], ds_dir / "_src", conf=CONFIG["weak_conf"],
                                             imgsz=CONFIG["imgsz"], limit_per_class=CONFIG["weak_limit_per_class"])
         stats = {"pseudo_label": pst, **build_dataset([ds_dir / "_src"], ds_dir, classes, "detect")}

@@ -1,5 +1,5 @@
 {
-  "version": "yolo11x-weak-v1",
+  "version": "server-weak-v1",
   "model": null,
   "mode": "weak",
   "scope": "animal-level (weak labels)",

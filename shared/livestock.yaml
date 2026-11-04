@@ -1,4 +1,4 @@
-# Ultralytics dataset file shared by YOLO11x and YOLO11n training (same classes, same ids as labels.json).
+# Ultralytics dataset file shared by server model and YOLO11n training (same classes, same ids as labels.json).
 # Keep in sync with labels.json: tests/test_vision_api.py fails if they drift apart.
 path: ../data_yolo        # dataset root; set to the real location when training
 train: images/train
