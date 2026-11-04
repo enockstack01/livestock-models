@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "scope": "animal-level (weak labels)",
+  "reviewed_by_veterinarian": false,
+  "note": "Classes of a weak-label model: one whole-animal box per photo labelled with the photo's condition. Not lesion localisation. 'untrained' classes had zero boxes and cannot be detected. Generated from the training run; do not edit ids.",
+  "species": [
+    "cattle",
+    "goat",
+    "sheep",
+    "pig",
+    "poultry"
+  ],
+  "classes": [
+    {
+      "id": 0,
+      "name": "foot_and_mouth_disease",
+      "status": "active",
+      "notifiable_suspect": true,
+      "zoonotic_suspect": false,
+      "suggests": "foot and mouth disease",
+      "training_instances": 30,
+      "display": {
+        "en": "Foot and mouth disease",
+        "fr": null,
+        "rw": null
+      }
+    },
+    {
+      "id": 1,
+      "name": "healthy",
+      "status": "active",
+      "notifiable_suspect": false,
+      "zoonotic_suspect": false,
+      "suggests": "healthy",
+      "training_instances": 965,
+      "display": {
+        "en": "Healthy animal",
+        "fr": null,
+        "rw": null
+      }
+    },
+    {
+      "id": 2,
+      "name": "lumpy_skin_disease",
+      "status": "active",
+      "notifiable_suspect": true,
+      "zoonotic_suspect": false,
+      "suggests": "lumpy skin disease",
+      "training_instances": 215,
+      "display": {
+        "en": "Lumpy skin disease",
+        "fr": null,
+        "rw": null
+      }
+    }
+  ]
+}

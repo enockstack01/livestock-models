@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "livestock-vision"
+version = "0.1.0"
+description = "Livestock disease detection: YOLO11x server model, YOLO11n phone model, Qwen report API, web and mobile apps"
+requires-python = ">=3.10"
+dependencies = ["fastapi", "uvicorn[standard]", "httpx", "sqlalchemy", "pydantic", "pillow", "python-multipart", "pyyaml", "numpy"]
+
+[project.optional-dependencies]
+vision = ["ultralytics==8.4.191", "torch", "torchvision"]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]

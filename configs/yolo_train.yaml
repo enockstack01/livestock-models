@@ -1,0 +1,45 @@
+# YOLO11x fine-tuning for livestock pathology. Every key is passed straight to ultralytics `model.train()`.
+# Run:  python -m livestock_dx.detect.train --data data_yolo/dataset.yaml            (GPU strongly advised)
+#       add --task segment to start from yolo11x-seg.pt and train on polygon masks.
+
+# ---- model / schedule -------------------------------------------------------------------------------------
+epochs: 120               # 100-150 recommended; patience stops early if val mAP stalls
+patience: 30
+imgsz: 640                # use 1024 to catch individual ticks / early nodules (needs ~2.5x the GPU memory)
+multi_scale: 0.5          # float in this ultralytics version: sizes vary by +-50 % around imgsz each batch -> distance robustness
+batch: 8                  # yolo11x at 640 fits ~8 on a 16 GB GPU; lower it on smaller cards (-1 = auto)
+optimizer: SGD            # or AdamW (then use lr0: 0.001); 'auto' lets ultralytics choose
+lr0: 0.01                 # initial learning rate
+lrf: 0.01                 # final lr = lr0 * lrf
+cos_lr: true              # cosine decay
+momentum: 0.937
+weight_decay: 0.0005
+warmup_epochs: 3.0
+warmup_momentum: 0.8
+warmup_bias_lr: 0.1
+cache: false              # 'ram' / 'disk' speeds up epochs if memory allows
+workers: 4
+amp: true
+seed: 0
+deterministic: true
+plots: true
+
+# ---- augmentation for barns, mud, shadows, dusk/dawn and varying camera distance ---------------------------
+mosaic: 1.0               # 4 images in one -> scale invariance, objects at the edges
+close_mosaic: 10          # switch mosaic off for the last N epochs so the model sees natural framing
+mixup: 0.15               # blend two images (distance / clutter robustness)
+copy_paste: 0.1           # segmentation only: paste masks onto other images
+scale: 0.5                # random scale gain, +-50 %
+translate: 0.1
+degrees: 10.0             # slight rotation (animals are photographed at angles)
+perspective: 0.0
+fliplr: 0.5
+flipud: 0.0               # animals are never upside down
+hsv_h: 0.02               # hue: small, skin/lesion colour is diagnostic
+hsv_s: 0.7                # saturation: dusk/dawn, dirty lenses
+hsv_v: 0.5                # value/brightness: dark barns vs. bright pasture (default 0.4)
+
+# ---- loss balance (maximise recall on infectious disease) -------------------------------------------------
+box: 7.5                  # box regression
+cls: 1.0                  # classification; raised from the 0.5 default so rare diseases are not ignored
+dfl: 1.5                  # distribution focal loss (box edge sharpness)

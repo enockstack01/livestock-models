@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LivestockPro - Animal health check</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header>
+  <div class="in">
+    <h1>LivestockPro<small>Animal health check: photo detection + veterinary advice</small></h1>
+    <span class="grow"></span>
+    <span class="pill" id="pillV" title="Livestock Vision API (YOLO11x)">Vision: ...</span>
+    <span class="pill" id="pillL" title="LLM API (Qwen)">Advice: ...</span>
+    <button class="sec" id="openSettings">Settings</button>
+  </div>
+</header>
+
+<dialog id="settings">
+  <form method="dialog">
+    <h2>Connection settings</h2>
+    <label>Livestock Vision API address<input id="visionUrl" placeholder="http://127.0.0.1:8001"></label>
+    <label>LLM API address<input id="llmUrl" placeholder="http://127.0.0.1:8002"></label>
+    <label>Access token (Agricoders login)<textarea id="token" rows="3" placeholder="paste your token" spellcheck="false"></textarea></label>
+    <p class="muted">The token is kept for this browser tab only and is sent only to the two addresses above.</p>
+    <div class="actions"><button id="saveSettings" class="primary" value="ok">Save</button><button value="cancel" class="sec">Cancel</button></div>
+  </form>
+</dialog>
+
+<main>
+  <section class="card" id="stepPhoto">
+    <h2>1. Photo and animal</h2>
+    <p class="muted">Take a clear, close photo of the affected area (skin, mouth, hooves, eyes, udder). Good light helps.</p>
+    <div class="grid2">
+      <div>
+        <label class="drop" for="photo"><b id="dropText">Choose or take a photo</b><span class="muted">JPEG / PNG / WebP</span></label>
+        <input type="file" id="photo" accept="image/*" capture="environment" hidden>
+        <img id="preview" alt="" hidden>
+      </div>
+      <div>
+        <div class="row2">
+          <label>Species<select id="species"><option value="">Not sure</option></select></label>
+          <label>District<input id="district" maxlength="80" placeholder="e.g. Huye"></label>
+        </div>
+        <label>Animal ID / tag (optional)<input id="animalId" maxlength="80"></label>
+        <div class="row2">
+          <label>Weight (kg)<input id="weight" type="number" min="1" max="2000" placeholder="needed for any dose"></label>
+          <label>Age (months)<input id="age" type="number" min="0" max="600"></label>
+        </div>
+        <div class="checks"><label><input type="checkbox" id="lactating"> Lactating</label><label><input type="checkbox" id="pregnant"> Pregnant</label></div>
+        <label>Report language<select id="language"><option value="en">English</option><option value="fr">Francais</option><option value="rw">Kinyarwanda (not yet checked by a native speaker)</option></select></label>
+      </div>
+    </div>
+    <div class="actions"><button class="primary" id="detectBtn" disabled>Check this animal</button></div>
+    <div id="msg" class="muted" role="status"></div>
+  </section>
+
+  <section class="card" id="stepFindings" hidden>
+    <h2>2. What the photo shows</h2>
+    <div id="flags"></div>
+    <div class="grid2">
+      <div><canvas id="canvas" aria-label="Photo with detected findings outlined"></canvas></div>
+      <div>
+        <div id="findingsList"></div>
+        <div id="modelLine" class="muted"></div>
+        <div id="fbBox" class="fb"></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="card" id="stepReport" hidden>
+    <h2>3. Advice report</h2>
+    <div id="reportStatus" class="muted" role="status"></div>
+    <div id="reportBox"></div>
+    <div class="actions"><button class="sec" id="regen" hidden>Write the report again</button></div>
+  </section>
+
+  <section class="card" id="stepChat" hidden>
+    <h2>4. Ask a follow-up question</h2>
+    <div id="chatLog" class="chat" aria-live="polite"></div>
+    <div class="chatrow"><input id="chatInput" maxlength="1000" placeholder="e.g. Can I still sell the milk?"><button class="primary" id="chatSend">Ask</button></div>
+  </section>
+
+  <p class="notice">Decision support from the visible signs in a photo, not a veterinary diagnosis. Always confirm serious or notifiable conditions (foot-and-mouth disease, lumpy skin disease) with a veterinarian or a laboratory test. This system currently detects whole animals labelled healthy / lumpy skin disease / foot-and-mouth disease; it does not locate individual lesions.</p>
+</main>
+<script type="module" src="app.js"></script>
+</body>
+</html>

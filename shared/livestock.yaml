@@ -1,0 +1,16 @@
+# Ultralytics dataset file shared by YOLO11x and YOLO11n training (same classes, same ids as labels.json).
+# Keep in sync with labels.json: tests/test_vision_api.py fails if they drift apart.
+path: ../data_yolo        # dataset root; set to the real location when training
+train: images/train
+val: images/val
+names:
+  0: skin_nodule
+  1: mouth_foot_lesion
+  2: tick
+  3: mange_crusting
+  4: ringworm_patch
+  5: wound_abscess
+  6: eye_discharge_opacity
+  7: swollen_udder
+  8: nasal_discharge
+  9: poor_body_condition

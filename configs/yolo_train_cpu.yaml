@@ -1,0 +1,14 @@
+# Overrides applied on top of yolo_train.yaml by `python -m livestock_dx.detect.cpu_run`.
+# Goal: complete the SAME training recipe (warm-up -> cosine decay -> close-mosaic) on a laptop CPU without
+# starving the rest of the machine. These are compromises, and every one of them is a deliberate trade.
+imgsz: 320          # 640 costs 4x the compute and RAM of 320; raise it (416) when more RAM is free. Small is fine on a phone too
+batch: 2
+freeze: 10          # freeze backbone layers 0-9: ~3x faster, far less RAM; the neck + head still learn the new classes
+multi_scale: 0.0    # off: varying sizes multiply CPU time/RAM; use 0.5 on the GPU run
+workers: 0          # data loading in-process: no extra worker processes, no extra RAM
+amp: false          # AMP is GPU-only
+plots: false        # avoids downloading fonts and writing dozens of plot files
+cache: false
+patience: 100       # with a time budget, never stop early: let the schedule complete
+close_mosaic: 2     # tiny epoch counts: switch mosaic off for the last 2 epochs only
+epochs: 30          # upper bound; the time budget (below, set by the runner) is what actually decides the epoch count

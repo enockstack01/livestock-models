@@ -1,0 +1,28 @@
+{
+  "installed": true,
+  "scope": "weak-animal-level",
+  "warning": "DEVELOPMENT MODEL: trained on whole-animal boxes (one box per photo, labelled healthy / lumpy skin disease / FMD). It does NOT find lesions, and FMD had only 30 training boxes. Not for field use.",
+  "file": "model.tflite",
+  "format": "litert",
+  "model": "yolo11n",
+  "version": "yolo11n-weak-v1",
+  "imgsz": 640,
+  "quantization": "w8a32 (int8 weights, float32 activations)",
+  "int8": false,
+  "task": "detect",
+  "labels": [
+    "foot_and_mouth_disease",
+    "healthy",
+    "lumpy_skin_disease"
+  ],
+  "input_layout": "nchw",
+  "input_dtype": "float32",
+  "output_layout": "channels_first",
+  "output": "(1, 4+nc, 8400) float32; boxes cx,cy,w,h normalised 0..1 (the decoder also accepts pixels)",
+  "measured_on_191_val_photos": {
+    "mAP50": 0.7007,
+    "mAP50-95": 0.4694,
+    "pt_reference_mAP50-95": 0.5165
+  },
+  "note": "Chosen over static INT8 (same 3 MB): INT8 shifted confidence scores by ~0.17 on average in an on-device-pipeline check, FP32 by 0.002, this by 0.005."
+}

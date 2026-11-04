@@ -1,0 +1,121 @@
+{
+ "detection": {
+  "diagnosis_id": "lv_0d80a40248ef",
+  "model_version": "yolo11x-weak-v1",
+  "species": "cattle",
+  "detections": [
+   {
+    "class": "lumpy_skin_disease",
+    "confidence": 0.8934,
+    "box": [
+     0.0,
+     0.5,
+     256.0,
+     256.0
+    ]
+   }
+  ],
+  "summary": {
+   "lumpy_skin_disease": 1
+  },
+  "flags": [
+   "possible_notifiable_disease"
+  ],
+  "annotated_image_url": "http://127.0.0.1:8001/v1/annotated/lv_0d80a40248ef.jpg",
+  "image": {
+   "width": 256,
+   "height": 256
+  },
+  "latency_ms": 12830.0
+ },
+ "report": {
+  "diagnosis_id": "lv_0d80a40248ef",
+  "model_version": "mock-qwen",
+  "language": "en",
+  "source": "llm",
+  "degraded": false,
+  "report": {
+   "summary": "(MOCK LLM, not a real model) Findings: 1 x lumpy skin disease.",
+   "possible_conditions": [
+    "Lumpy skin disease (LSD)"
+   ],
+   "severity": "high",
+   "notifiable": true,
+   "zoonotic": false,
+   "immediate_actions": [
+    "Isolate the animal from the rest of the herd and do not move animals on or off the farm.",
+    "Separate the animal from the herd and keep it away from other farms' animals",
+    "Do not move or sell animals; call your veterinarian or the animal-health authority at once: LSD is a reportable (notifiable) disease in most countries",
+    "Reduce biting flies, mosquitoes and ticks (they spread it): clean manure, remove standing water, use vet-approved repellents",
+    "Do not share needles, tools or water troughs between animals",
+    "Handle sick animals last and wash hands and boots afterwards"
+   ],
+   "treatment": {
+    "supportive_care": [
+     "Treatment is supportive and decided by a vet (for example for secondary infections). Early reporting limits spread."
+    ],
+    "medicines": [],
+    "requires_vet": true,
+    "withdrawal_periods": []
+   },
+   "prevention": [
+    "Vaccination through official programmes",
+    "Insect control and movement controls",
+    "Buy animals only from known healthy herds and quarantine new arrivals"
+   ],
+   "follow_up_days": 2,
+   "disclaimer": "This is decision support based on visible signs in a photo, not a veterinary diagnosis. Confirm serious or notifiable conditions with a veterinarian or a laboratory test."
+  },
+  "safety_adjustments": [
+   "added isolation advice"
+  ],
+  "advice_pack_reviewed_by_vet": false,
+  "latency_ms": 126.3
+ },
+ "classes": [
+  {
+   "id": 0,
+   "name": "foot_and_mouth_disease",
+   "status": "active",
+   "notifiable_suspect": true,
+   "zoonotic_suspect": false,
+   "suggests": "foot and mouth disease",
+   "training_instances": 30,
+   "display": {
+    "en": "Foot and mouth disease",
+    "fr": null,
+    "rw": null
+   }
+  },
+  {
+   "id": 1,
+   "name": "healthy",
+   "status": "active",
+   "notifiable_suspect": false,
+   "zoonotic_suspect": false,
+   "suggests": "healthy",
+   "training_instances": 965,
+   "display": {
+    "en": "Healthy animal",
+    "fr": null,
+    "rw": null
+   }
+  },
+  {
+   "id": 2,
+   "name": "lumpy_skin_disease",
+   "status": "active",
+   "notifiable_suspect": true,
+   "zoonotic_suspect": false,
+   "suggests": "lumpy skin disease",
+   "training_instances": 215,
+   "display": {
+    "en": "Lumpy skin disease",
+    "fr": null,
+    "rw": null
+   }
+  }
+ ],
+ "chat": "(MOCK assistant, not a real language model) You asked: \"Can I still milk her?\". A real model would answer here. For now: isolate any animal you are worried about, keep it comfortable with shade and clean water, and contact a veterinarian. Suspected foot-and-mouth disease or lumpy skin disease must be reported to the sector veterinary officer / RAB.",
+ "note": "Recorded from the live stack: real YOLO11x detection, report from the MOCK LLM (livestock_llm.dev_mock). Photo: Zenodo 11003967 (CC-BY-4.0)."
+}

@@ -1,0 +1,22 @@
+__pycache__/
+*.egg-info/
+.pytest_cache/
+# weights live on Hugging Face (see models/README.md), not in git
+*.pt
+*.onnx
+# local state and secrets
+.env
+.dev_jwt_secret
+kaggle.json
+access_token
+vision_data/
+runs/
+pretrained/
+data*/
+mobile/node_modules/
+mobile/.expo/
+mobile/android/
+mobile/ios/
+kaggle_train/_upload/
+kaggle_train/_kernel*/
+kaggle_train/_wheels/

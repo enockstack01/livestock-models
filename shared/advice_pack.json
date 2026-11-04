@@ -1,0 +1,255 @@
+{
+  "data_version": 2,
+  "reviewed_by_veterinarian": false,
+  "disclaimer": "General first-response information only, NOT a diagnosis or a treatment plan. It has not yet been reviewed by a veterinarian: have a qualified vet or your national veterinary service review and localise it before field use. Never give medicines without a vet's instruction.",
+  "note": "Single source for the offline app and for the LLM API's fallback when the language model is unavailable. mobile/src/data/diseases.json must be an exact copy (tests/test_advice_pack.py checks it). No drug names or doses on purpose.",
+  "diseases": [
+    {
+      "label": "lumpy_skin_disease",
+      "aliases": ["skin_nodule", "lumpy_skin_nodules"],
+      "title": "Lumpy skin disease (LSD)",
+      "species": "Cattle, buffalo",
+      "notifiable": true,
+      "zoonotic": false,
+      "urgency": "urgent",
+      "signs": [
+        "Firm, round, raised lumps (about 1-5 cm) on the skin, often over the head, neck, legs, udder and body",
+        "Fever, loss of appetite, drop in milk yield",
+        "Swollen lymph nodes; watery eye and nose discharge",
+        "Lumps can ulcerate and scab; swelling of the legs and brisket"
+      ],
+      "do_now": [
+        "Separate the animal from the herd and keep it away from other farms' animals",
+        "Do not move or sell animals; call your veterinarian or the animal-health authority at once: LSD is a reportable (notifiable) disease in most countries",
+        "Reduce biting flies, mosquitoes and ticks (they spread it): clean manure, remove standing water, use vet-approved repellents",
+        "Do not share needles, tools or water troughs between animals",
+        "Handle sick animals last and wash hands and boots afterwards"
+      ],
+      "prevention": [
+        "Vaccination through official programmes",
+        "Insect control and movement controls",
+        "Buy animals only from known healthy herds and quarantine new arrivals"
+      ],
+      "see_vet": "Treatment is supportive and decided by a vet (for example for secondary infections). Early reporting limits spread."
+    },
+    {
+      "label": "foot_and_mouth_disease",
+      "aliases": ["mouth_foot_lesion", "foot_and_mouth_lesions", "fmd"],
+      "title": "Foot-and-mouth disease (FMD)",
+      "species": "Cattle, sheep, goats, pigs (and other cloven-hoofed animals)",
+      "notifiable": true,
+      "zoonotic": false,
+      "urgency": "emergency",
+      "signs": [
+        "Blisters and raw erosions on the tongue, gums, lips and muzzle",
+        "Blisters between the hooves and on the coronary band; lameness, reluctance to move",
+        "Drooling, smacking of the lips, loss of appetite, fever",
+        "Lesions on the teats; sharp fall in milk"
+      ],
+      "do_now": [
+        "Treat as an emergency: it spreads extremely fast. Call your veterinarian or the animal-health authority immediately",
+        "Isolate the animal and stop all movement of animals, people, vehicles and equipment on and off the farm",
+        "Do not take the animal to markets, shows or shared pasture",
+        "Disinfect boots, clothes and vehicles with a vet-approved disinfectant; keep visitors away",
+        "Keep feed and water for sick animals separate"
+      ],
+      "prevention": [
+        "Vaccination matched to the circulating virus type, through official programmes",
+        "Strict biosecurity and movement control; quarantine new animals",
+        "Report any suspicious case early: this is what protects neighbouring farms"
+      ],
+      "see_vet": "There is no specific cure; control is by official measures. Only a laboratory test can confirm FMD."
+    },
+    {
+      "label": "tick",
+      "aliases": ["tick_clusters", "tick_infestation", "ticks"],
+      "title": "Tick infestation",
+      "species": "Cattle, sheep, goats and others",
+      "notifiable": false,
+      "zoonotic": false,
+      "urgency": "soon",
+      "signs": [
+        "Small round ticks attached to the skin, often in clusters around ears, udder, groin, tail base and between the legs",
+        "Skin irritation, hair loss, restlessness; heavy burdens cause anaemia and poor growth",
+        "Fever, pale gums, weakness or dark urine can point to a tick-borne disease"
+      ],
+      "do_now": [
+        "Remove ticks with a proper tick remover, pulling steadily; do not crush them or burn them on the animal",
+        "Ask a vet or animal-health worker which tick-control product is approved and safe locally, and follow the label",
+        "Check the whole herd, especially ears, udder and groin; keep pasture and housing tidy",
+        "If the animal has fever, weakness, pale gums or dark urine, call a vet the same day"
+      ],
+      "prevention": [
+        "Regular, vet-advised tick control and pasture management",
+        "Inspect animals routinely and after grazing in bush"
+      ],
+      "see_vet": "Tick-borne diseases need a vet's diagnosis and treatment."
+    },
+    {
+      "label": "wound_abscess",
+      "aliases": ["injuries", "injury", "wound", "abscess_or_wound"],
+      "title": "Wounds, injuries and abscesses",
+      "species": "All livestock",
+      "notifiable": false,
+      "zoonotic": false,
+      "urgency": "soon",
+      "signs": [
+        "Cuts, tears, swellings or abscesses; limping; blood or pus; flies around the area",
+        "Heat, pain, bad smell or swelling suggest infection"
+      ],
+      "do_now": [
+        "Restrain the animal calmly and safely; avoid being kicked or bitten",
+        "Control heavy bleeding with firm, clean pressure",
+        "Rinse the wound with plenty of clean water; keep flies off",
+        "Call a vet for deep, bleeding, infected, joint or hoof wounds, or any wound near the eyes; wounds can lead to tetanus, so ask the vet about protection"
+      ],
+      "prevention": [
+        "Remove sharp objects and fix fences and housing",
+        "Keep bedding and handling areas clean and dry"
+      ],
+      "see_vet": "A vet should decide on wound closure, antibiotics and pain relief."
+    },
+    {
+      "label": "mange_crusting",
+      "aliases": ["mange", "scabies"],
+      "title": "Mange / skin crusting",
+      "species": "Cattle, sheep, goats, pigs",
+      "notifiable": false,
+      "zoonotic": true,
+      "urgency": "soon",
+      "signs": [
+        "Intense itching, rubbing, hair loss, thick crusts and scabs, often on the head, neck, flanks and base of the tail",
+        "Thickened wrinkled skin in long-standing cases; weight loss"
+      ],
+      "do_now": [
+        "Separate affected animals and avoid sharing brushes, ropes and housing",
+        "Ask a vet or animal-health worker for a skin scraping to confirm the cause and which treatment is approved locally",
+        "Wear gloves when handling and wash hands and clothes afterwards: some mange mites can cause itchy skin in people",
+        "Clean and disinfect housing and equipment"
+      ],
+      "prevention": ["Quarantine and inspect new animals", "Keep housing clean and not overcrowded"],
+      "see_vet": "Treatment depends on the mite and must follow the product label and veterinary advice."
+    },
+    {
+      "label": "ringworm_patch",
+      "aliases": ["ringworm", "dermatophytosis"],
+      "title": "Ringworm patches",
+      "species": "Cattle (especially calves), goats, sheep, horses",
+      "notifiable": false,
+      "zoonotic": true,
+      "urgency": "soon",
+      "signs": [
+        "Round, grey-white, crusty, hairless patches, often on the head, around the eyes and on the neck",
+        "Usually little itching; spreads in crowded or damp housing"
+      ],
+      "do_now": [
+        "Separate affected animals; it spreads by contact and shared equipment",
+        "Wear gloves and wash hands well: ringworm spreads to people, especially children",
+        "Ask a vet which treatment is suitable and approved; do not scrape crusts off without gloves",
+        "Clean and disinfect housing and equipment; improve ventilation and dryness"
+      ],
+      "prevention": ["Avoid crowding and damp housing", "Isolate and inspect new animals"],
+      "see_vet": "Often clears by itself over months, but treatment limits spread."
+    },
+    {
+      "label": "eye_discharge_opacity",
+      "aliases": ["pinkeye", "infectious_keratoconjunctivitis"],
+      "title": "Eye discharge / cloudy eye (suspected pinkeye)",
+      "species": "Cattle, sheep, goats",
+      "notifiable": false,
+      "zoonotic": false,
+      "urgency": "soon",
+      "signs": [
+        "Watery or pus-like eye discharge, squinting, light sensitivity",
+        "White or blue cloudiness of the eye surface; in severe cases an ulcer"
+      ],
+      "do_now": [
+        "Move the animal into shade and keep flies away from the eyes",
+        "Do not rub or put anything in the eye; call a vet promptly, because untreated eye ulcers can cause blindness",
+        "Separate affected animals; pinkeye spreads between animals by flies and contact"
+      ],
+      "prevention": ["Fly control", "Avoid dusty feed and tall rough pasture seed heads"],
+      "see_vet": "A vet should examine the eye and decide on treatment."
+    },
+    {
+      "label": "swollen_udder",
+      "aliases": ["mastitis"],
+      "title": "Swollen udder (suspected mastitis)",
+      "species": "Dairy cattle, goats, sheep",
+      "notifiable": false,
+      "zoonotic": false,
+      "urgency": "urgent",
+      "signs": [
+        "Hot, hard, swollen or painful udder quarter; the animal may kick when touched",
+        "Clots, flakes, watery or bloody milk; fever and loss of appetite in severe cases"
+      ],
+      "do_now": [
+        "Call a vet the same day: severe mastitis can be life-threatening",
+        "Milk the affected quarter out gently and often, last, with clean hands; keep this milk away from people, calves and the bulk tank",
+        "Wash and dry the udder; keep bedding clean and dry",
+        "Do not give any medicine unless a vet instructs you; treated animals have milk and meat withdrawal periods"
+      ],
+      "prevention": ["Clean, dry bedding and milking hygiene", "Dry-cow management and regular udder checks"],
+      "see_vet": "Treatment depends on the cause and must follow veterinary advice."
+    },
+    {
+      "label": "nasal_discharge",
+      "aliases": ["respiratory_infection", "pneumonia"],
+      "title": "Nasal discharge (possible respiratory infection)",
+      "species": "All livestock",
+      "notifiable": false,
+      "zoonotic": false,
+      "urgency": "soon",
+      "signs": [
+        "Runny nose (clear, thick or pus-like), coughing, fast or laboured breathing, fever",
+        "Reduced appetite, standing apart from the herd"
+      ],
+      "do_now": [
+        "Separate the animal in a clean, well-ventilated but draught-free place with shade, water and feed",
+        "Call a vet the same day if breathing is laboured, there is fever, or several animals are affected",
+        "Several animals with nasal discharge, mouth sores or sudden deaths can mean a notifiable disease: tell the animal-health authority"
+      ],
+      "prevention": ["Good ventilation and low stocking density", "Vaccination and parasite control as advised by a vet"],
+      "see_vet": "Cause and treatment need a veterinary diagnosis."
+    },
+    {
+      "label": "poor_body_condition",
+      "aliases": ["malnutrition", "emaciation"],
+      "title": "Poor body condition",
+      "species": "All livestock",
+      "notifiable": false,
+      "zoonotic": false,
+      "urgency": "soon",
+      "signs": [
+        "Visible ribs, hips and backbone, sunken flanks, dull coat, weakness",
+        "Can come from poor feed or water, worms and other parasites, or chronic disease"
+      ],
+      "do_now": [
+        "Check the quality and quantity of feed and clean water first",
+        "Ask a vet or animal-health worker about worms, tick-borne disease and other chronic causes, and about deworming that is approved locally",
+        "Separate very weak animals so they can feed without competition"
+      ],
+      "prevention": ["Balanced feeding and mineral supply", "Regular parasite control as advised by a vet"],
+      "see_vet": "If an animal stays thin despite good feed, a vet should find the cause."
+    },
+    {
+      "label": "healthy",
+      "aliases": ["normal"],
+      "title": "No disease detected",
+      "species": "All livestock",
+      "notifiable": false,
+      "zoonotic": false,
+      "urgency": "none",
+      "signs": [
+        "The model found nothing it recognises as one of its conditions in this photo",
+        "This does NOT prove the animal is healthy: the model only knows a few conditions and only sees what is in the photo"
+      ],
+      "do_now": [
+        "If the animal still seems unwell (not eating, fever, limping, discharge), contact a vet regardless of this result",
+        "Retake the photo closer, in good light, showing the affected area, and try again"
+      ],
+      "prevention": ["Routine vaccination, parasite control and clean housing as advised by your vet"],
+      "see_vet": "When in doubt, ask a vet."
+    }
+  ]
+}

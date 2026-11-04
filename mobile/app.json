@@ -1,0 +1,43 @@
+{
+  "expo": {
+    "name": "LivestockDx",
+    "slug": "livestockdx",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "org.livestockdx.app"
+    },
+    "android": {
+      "package": "org.livestockdx.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#E6F4FE",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      [
+        "expo-image-picker",
+        {
+          "cameraPermission": "LivestockDx uses the camera to photograph an animal's affected area. Photos stay on your phone.",
+          "photosPermission": "LivestockDx reads a photo you choose. Photos stay on your phone."
+        }
+      ],
+      [
+        "react-native-fast-tflite",
+        {
+          "enableCoreMLDelegate": true,
+          "enableAndroidGpuLibraries": true
+        }
+      ]
+    ]
+  }
+}

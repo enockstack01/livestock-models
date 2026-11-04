@@ -1,0 +1,11 @@
+# Verified by eye against sample images (see README "Data provenance").
+"zenodo:7779246":            # FMD_Cattle: 0 = clinically normal mouths/hooves, 1 = FMD lesions
+  "0": healthy
+  "1": foot_and_mouth_disease
+"local:lsd_datahub":         # Zenodo 11003967, lumpy_unbalanced.zip (original, non-augmented images)
+  Normal: healthy
+  Mild: lumpy_skin_disease
+  Severe: lumpy_skin_disease
+"zenodo:7778284":            # FMD_Pig: 0 = healthy pig, 1 = FMD lesions (hooves). Many positives carry USDA/PIADC watermarks.
+  "0": healthy
+  "1": foot_and_mouth_disease

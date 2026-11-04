@@ -1,0 +1,372 @@
+{
+ "pack_version": 2,
+ "cases": [
+  {
+   "name": "weak: lumpy skin + healthy",
+   "detections": [
+    {
+     "class": "lumpy_skin_disease",
+     "confidence": 0.9,
+     "box": [
+      1.0,
+      2.0,
+      30.0,
+      40.0
+     ]
+    },
+    {
+     "class": "healthy",
+     "confidence": 0.6,
+     "box": [
+      1.0,
+      2.0,
+      30.0,
+      40.0
+     ]
+    }
+   ],
+   "flags": [
+    "possible_notifiable_disease"
+   ],
+   "expected": {
+    "severity": "high",
+    "notifiable": true,
+    "zoonotic": false,
+    "possible_conditions": [
+     "Lumpy skin disease (LSD)"
+    ],
+    "immediate_actions": [
+     "Separate the animal from the herd and keep it away from other farms' animals",
+     "Do not move or sell animals; call your veterinarian or the animal-health authority at once: LSD is a reportable (notifiable) disease in most countries",
+     "Reduce biting flies, mosquitoes and ticks (they spread it): clean manure, remove standing water, use vet-approved repellents",
+     "Do not share needles, tools or water troughs between animals",
+     "Handle sick animals last and wash hands and boots afterwards"
+    ],
+    "prevention": [
+     "Vaccination through official programmes",
+     "Insect control and movement controls",
+     "Buy animals only from known healthy herds and quarantine new arrivals"
+    ],
+    "follow_up_days": 2,
+    "supportive_care": [
+     "Treatment is supportive and decided by a vet (for example for secondary infections). Early reporting limits spread."
+    ],
+    "requires_vet": true
+   }
+  },
+  {
+   "name": "weak: healthy only",
+   "detections": [
+    {
+     "class": "healthy",
+     "confidence": 0.8,
+     "box": [
+      1.0,
+      2.0,
+      30.0,
+      40.0
+     ]
+    }
+   ],
+   "flags": [],
+   "expected": {
+    "severity": "low",
+    "notifiable": false,
+    "zoonotic": false,
+    "possible_conditions": [
+     "No condition recognised in this photo"
+    ],
+    "immediate_actions": [
+     "If the animal still seems unwell (not eating, fever, limping, discharge), contact a vet regardless of this result",
+     "Retake the photo closer, in good light, showing the affected area, and try again"
+    ],
+    "prevention": [
+     "Routine vaccination, parasite control and clean housing as advised by your vet"
+    ],
+    "follow_up_days": null,
+    "supportive_care": [
+     "When in doubt, ask a vet."
+    ],
+    "requires_vet": true
+   }
+  },
+  {
+   "name": "weak: FMD and LSD",
+   "detections": [
+    {
+     "class": "foot_and_mouth_disease",
+     "confidence": 0.8,
+     "box": [
+      1.0,
+      2.0,
+      30.0,
+      40.0
+     ]
+    },
+    {
+     "class": "lumpy_skin_disease",
+     "confidence": 0.5,
+     "box": [
+      1.0,
+      2.0,
+      30.0,
+      40.0
+     ]
+    }
+   ],
+   "flags": [
+    "possible_notifiable_disease"
+   ],
+   "expected": {
+    "severity": "urgent",
+    "notifiable": true,
+    "zoonotic": false,
+    "possible_conditions": [
+     "Foot-and-mouth disease (FMD)",
+     "Lumpy skin disease (LSD)"
+    ],
+    "immediate_actions": [
+     "Treat as an emergency: it spreads extremely fast. Call your veterinarian or the animal-health authority immediately",
+     "Isolate the animal and stop all movement of animals, people, vehicles and equipment on and off the farm",
+     "Do not take the animal to markets, shows or shared pasture",
+     "Disinfect boots, clothes and vehicles with a vet-approved disinfectant; keep visitors away",
+     "Keep feed and water for sick animals separate",
+     "Separate the animal from the herd and keep it away from other farms' animals",
+     "Do not move or sell animals; call your veterinarian or the animal-health authority at once: LSD is a reportable (notifiable) disease in most countries",
+     "Reduce biting flies, mosquitoes and ticks (they spread it): clean manure, remove standing water, use vet-approved repellents",
+     "Do not share needles, tools or water troughs between animals",
+     "Handle sick animals last and wash hands and boots afterwards"
+    ],
+    "prevention": [
+     "Vaccination matched to the circulating virus type, through official programmes",
+     "Strict biosecurity and movement control; quarantine new animals",
+     "Report any suspicious case early: this is what protects neighbouring farms",
+     "Vaccination through official programmes",
+     "Insect control and movement controls",
+     "Buy animals only from known healthy herds and quarantine new arrivals"
+    ],
+    "follow_up_days": 1,
+    "supportive_care": [
+     "There is no specific cure; control is by official measures. Only a laboratory test can confirm FMD.",
+     "Treatment is supportive and decided by a vet (for example for secondary infections). Early reporting limits spread."
+    ],
+    "requires_vet": true
+   }
+  },
+  {
+   "name": "plan: two nodules and a tick",
+   "detections": [
+    {
+     "class": "skin_nodule",
+     "confidence": 0.88,
+     "box": [
+      1.0,
+      2.0,
+      30.0,
+      40.0
+     ]
+    },
+    {
+     "class": "skin_nodule",
+     "confidence": 0.81,
+     "box": [
+      1.0,
+      2.0,
+      30.0,
+      40.0
+     ]
+    },
+    {
+     "class": "tick",
+     "confidence": 0.74,
+     "box": [
+      1.0,
+      2.0,
+      30.0,
+      40.0
+     ]
+    }
+   ],
+   "flags": [
+    "possible_notifiable_disease"
+   ],
+   "expected": {
+    "severity": "high",
+    "notifiable": true,
+    "zoonotic": false,
+    "possible_conditions": [
+     "Lumpy skin disease (LSD)",
+     "Tick infestation"
+    ],
+    "immediate_actions": [
+     "Separate the animal from the herd and keep it away from other farms' animals",
+     "Do not move or sell animals; call your veterinarian or the animal-health authority at once: LSD is a reportable (notifiable) disease in most countries",
+     "Reduce biting flies, mosquitoes and ticks (they spread it): clean manure, remove standing water, use vet-approved repellents",
+     "Do not share needles, tools or water troughs between animals",
+     "Handle sick animals last and wash hands and boots afterwards",
+     "Remove ticks with a proper tick remover, pulling steadily; do not crush them or burn them on the animal",
+     "Ask a vet or animal-health worker which tick-control product is approved and safe locally, and follow the label",
+     "Check the whole herd, especially ears, udder and groin; keep pasture and housing tidy",
+     "If the animal has fever, weakness, pale gums or dark urine, call a vet the same day"
+    ],
+    "prevention": [
+     "Vaccination through official programmes",
+     "Insect control and movement controls",
+     "Buy animals only from known healthy herds and quarantine new arrivals",
+     "Regular, vet-advised tick control and pasture management",
+     "Inspect animals routinely and after grazing in bush"
+    ],
+    "follow_up_days": 2,
+    "supportive_care": [
+     "Treatment is supportive and decided by a vet (for example for secondary infections). Early reporting limits spread.",
+     "Tick-borne diseases need a vet's diagnosis and treatment."
+    ],
+    "requires_vet": true
+   }
+  },
+  {
+   "name": "plan: ringworm (zoonotic)",
+   "detections": [
+    {
+     "class": "ringworm_patch",
+     "confidence": 0.7,
+     "box": [
+      1.0,
+      2.0,
+      30.0,
+      40.0
+     ]
+    }
+   ],
+   "flags": [
+    "possible_zoonotic_risk"
+   ],
+   "expected": {
+    "severity": "moderate",
+    "notifiable": false,
+    "zoonotic": true,
+    "possible_conditions": [
+     "Ringworm patches"
+    ],
+    "immediate_actions": [
+     "Separate affected animals; it spreads by contact and shared equipment",
+     "Wear gloves and wash hands well: ringworm spreads to people, especially children",
+     "Ask a vet which treatment is suitable and approved; do not scrape crusts off without gloves",
+     "Clean and disinfect housing and equipment; improve ventilation and dryness"
+    ],
+    "prevention": [
+     "Avoid crowding and damp housing",
+     "Isolate and inspect new animals"
+    ],
+    "follow_up_days": 7,
+    "supportive_care": [
+     "Often clears by itself over months, but treatment limits spread."
+    ],
+    "requires_vet": true
+   }
+  },
+  {
+   "name": "plan: udder + nasal discharge",
+   "detections": [
+    {
+     "class": "swollen_udder",
+     "confidence": 0.6,
+     "box": [
+      1.0,
+      2.0,
+      30.0,
+      40.0
+     ]
+    },
+    {
+     "class": "nasal_discharge",
+     "confidence": 0.55,
+     "box": [
+      1.0,
+      2.0,
+      30.0,
+      40.0
+     ]
+    }
+   ],
+   "flags": [],
+   "expected": {
+    "severity": "high",
+    "notifiable": false,
+    "zoonotic": false,
+    "possible_conditions": [
+     "Swollen udder (suspected mastitis)",
+     "Nasal discharge (possible respiratory infection)"
+    ],
+    "immediate_actions": [
+     "Call a vet the same day: severe mastitis can be life-threatening",
+     "Milk the affected quarter out gently and often, last, with clean hands; keep this milk away from people, calves and the bulk tank",
+     "Wash and dry the udder; keep bedding clean and dry",
+     "Do not give any medicine unless a vet instructs you; treated animals have milk and meat withdrawal periods",
+     "Separate the animal in a clean, well-ventilated but draught-free place with shade, water and feed",
+     "Call a vet the same day if breathing is laboured, there is fever, or several animals are affected",
+     "Several animals with nasal discharge, mouth sores or sudden deaths can mean a notifiable disease: tell the animal-health authority"
+    ],
+    "prevention": [
+     "Clean, dry bedding and milking hygiene",
+     "Dry-cow management and regular udder checks",
+     "Good ventilation and low stocking density",
+     "Vaccination and parasite control as advised by a vet"
+    ],
+    "follow_up_days": 2,
+    "supportive_care": [
+     "Treatment depends on the cause and must follow veterinary advice.",
+     "Cause and treatment need a veterinary diagnosis."
+    ],
+    "requires_vet": true
+   }
+  },
+  {
+   "name": "no detections",
+   "detections": [],
+   "flags": [],
+   "expected": {
+    "severity": "low",
+    "notifiable": false,
+    "zoonotic": false,
+    "possible_conditions": [
+     "No condition recognised in this photo"
+    ],
+    "immediate_actions": [],
+    "prevention": [],
+    "follow_up_days": null,
+    "supportive_care": [],
+    "requires_vet": true
+   }
+  },
+  {
+   "name": "class the pack does not know",
+   "detections": [
+    {
+     "class": "zebra",
+     "confidence": 0.9,
+     "box": [
+      1.0,
+      2.0,
+      30.0,
+      40.0
+     ]
+    }
+   ],
+   "flags": [],
+   "expected": {
+    "severity": "low",
+    "notifiable": false,
+    "zoonotic": false,
+    "possible_conditions": [
+     "No condition recognised in this photo"
+    ],
+    "immediate_actions": [],
+    "prevention": [],
+    "follow_up_days": null,
+    "supportive_care": [],
+    "requires_vet": true
+   }
+  }
+ ]
+}

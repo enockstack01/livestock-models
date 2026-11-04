@@ -1,0 +1,18 @@
+{
+  "note": "Versions the apps and servers compare against. Null = nothing trained/released yet. Update on every release (see the release checklist in the master plan).",
+  "yolo11x": {
+    "version": "yolo11x-weak-v1",
+    "dataset_version": "b60384596e2c",
+    "weights": "models/yolo11x-weak-v1/best.pt"
+  },
+  "yolo11n": {
+    "latest": "yolo11n-weak-v1",
+    "min_supported": null,
+    "released_to": {
+      "android": null,
+      "ios": null
+    },
+    "weights": "models/yolo11n-weak-v1/best.pt"
+  },
+  "labels_version": 1
+}

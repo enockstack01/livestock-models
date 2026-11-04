@@ -1,0 +1,78 @@
+{
+  "version": "yolo11x-weak-v1",
+  "model": null,
+  "mode": "weak",
+  "scope": "animal-level (weak labels)",
+  "weights_sha256": "b60384596e2c691b0a0aac447851f8c7368cf98b567d3ab2c76fe5880047db61",
+  "trained_on": "Tesla T4",
+  "train_minutes": 226.6,
+  "dataset": {
+    "pseudo_label": {
+      "images": 1865,
+      "no_animal_found": 654,
+      "labelled": 1211,
+      "class:foot_and_mouth_disease": 30,
+      "class:healthy": 965,
+      "class:lumpy_skin_disease": 216
+    },
+    "images_seen": 1211,
+    "dropped_bad_label_lines": 0,
+    "kept_train": 1019,
+    "kept_val": 191,
+    "dropped_duplicate_image": 1,
+    "instances_per_class": {
+      "foot_and_mouth_disease": 30,
+      "healthy": 965,
+      "lumpy_skin_disease": 215
+    },
+    "label_errors": []
+  },
+  "config": {
+    "mode": "auto",
+    "task": "detect",
+    "imgsz": 640,
+    "epochs": 120,
+    "time_hours": 8.0,
+    "batch": 6,
+    "multi_scale": 0.25,
+    "weak_conf": 0.35,
+    "weak_limit_per_class": null,
+    "export": [
+      "onnx",
+      "litert"
+    ],
+    "allow_cpu": false,
+    "dry_run": false
+  },
+  "thresholds": {},
+  "thresholds_note": "Not tuned per class yet; tune on the validation set before relying on any threshold.",
+  "metrics": {
+    "mAP50": 0.8073851029415374,
+    "mAP50-95": 0.5659725223315644,
+    "precision": 0.7181063032086251,
+    "recall": 0.7509860859245939,
+    "per_class": {
+      "foot_and_mouth_disease": {
+        "precision": 0.6347270916282675,
+        "recall": 0.6923076923076923,
+        "ap50": 0.7326898326898328,
+        "ap": 0.3872570361570361
+      },
+      "healthy": {
+        "precision": 0.7326743518680866,
+        "recall": 0.8106505654660896,
+        "ap50": 0.8638916139475191,
+        "ap": 0.639494077480966
+      },
+      "lumpy_skin_disease": {
+        "precision": 0.7869174661295216,
+        "recall": 0.75,
+        "ap50": 0.8255738621872604,
+        "ap": 0.671166453356691
+      }
+    }
+  },
+  "warnings": [
+    "WEAK LABELS: one whole-animal box per photo from the COCO detector, labelled with the folder's condition. This is not lesion localisation; photos without a detectable animal (e.g. FMD mouth/hoof close-ups, pigs) are unlabelled."
+  ]
+}

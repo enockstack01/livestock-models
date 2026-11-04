@@ -1,0 +1,43 @@
+{
+ "source": "raw output0 [1,7,8400] of runs/kaggle/yolo11n best.onnx (yolo11n-weak-v1) on real photos; reference = ultralytics non_max_suppression(conf 0.2, iou 0.7) on the same tensor",
+ "names": [
+  "foot_and_mouth_disease",
+  "healthy",
+  "lumpy_skin_disease"
+ ],
+ "size": 640,
+ "shape": [
+  1,
+  7,
+  8400
+ ],
+ "conf": 0.2,
+ "iou": 0.7,
+ "cases": {
+  "case0": [
+   {
+    "class": "healthy",
+    "conf": 0.577,
+    "box": [
+     0.66,
+     0.58,
+     526.89,
+     647.18
+    ]
+   }
+  ],
+  "case3": [
+   {
+    "class": "lumpy_skin_disease",
+    "conf": 0.622,
+    "box": [
+     0.31,
+     0.22,
+     605.95,
+     643.85
+    ]
+   }
+  ],
+  "case4": []
+ }
+}
