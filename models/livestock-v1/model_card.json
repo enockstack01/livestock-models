@@ -1,5 +1,5 @@
 {
-  "version": "server-weak-v1",
+  "version": "livestock-v1",
   "model": null,
   "mode": "weak",
   "scope": "animal-level (weak labels)",

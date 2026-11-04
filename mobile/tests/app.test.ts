@@ -52,7 +52,7 @@ test('every plan class and every current-model class resolves to advice', () => 
 // ------------------------------------------------------------------ test doubles
 const CFG: Config = { visionUrl: 'http://v:8001/', llmUrl: 'http://l:8002', token: 'tok' };
 const CTX: Context = { language: 'en', species: 'cattle', district: 'Huye', animalId: 'cow-7', animal: { weight_kg: 250 } };
-const DET: DetectResponse = { diagnosis_id: 'lv_abc', model_version: 'server-weak-v1', species: 'cattle', detections: [{ class: 'lumpy_skin_disease', confidence: 0.9, box: [1, 1, 50, 50] }],
+const DET: DetectResponse = { diagnosis_id: 'lv_abc', model_version: 'livestock-v1', species: 'cattle', detections: [{ class: 'lumpy_skin_disease', confidence: 0.9, box: [1, 1, 50, 50] }],
   summary: { lumpy_skin_disease: 1 }, flags: ['possible_notifiable_disease'], annotated_image_url: 'u', image: { width: 640, height: 480 }, latency_ms: 80 };
 const REPORT: ReportResponse = { diagnosis_id: 'lv_abc', model_version: 'Qwen/Qwen3.6-27B-FP8', language: 'en', source: 'llm', degraded: false, safety_adjustments: [],
   report: { summary: 'AI summary', possible_conditions: ['LSD'], severity: 'high', notifiable: true, zoonotic: false, immediate_actions: ['Isolate'], treatment: { supportive_care: [], medicines: [], requires_vet: true, withdrawal_periods: [] }, prevention: [], follow_up_days: 2 } };
@@ -89,7 +89,7 @@ test('online: the server model detects, the LLM writes the report, nothing is qu
   const http = new FakeHttp(ONLINE);
   const { deps, queued } = mkDeps(http);
   const r = await runScan(PHOTO, CTX, CFG, deps);
-  assert.equal(r.mode, 'online'); assert.equal(r.confirmed, true); assert.equal(r.modelVersion, 'server-weak-v1'); assert.equal(r.reportSource, 'llm');
+  assert.equal(r.mode, 'online'); assert.equal(r.confirmed, true); assert.equal(r.modelVersion, 'livestock-v1'); assert.equal(r.reportSource, 'llm');
   assert.equal(r.report.summary, 'AI summary'); assert.equal(r.diagnosisId, 'lv_abc'); assert.deepEqual(r.image, { width: 640, height: 480 }); assert.equal(queued.length, 0);
   assert.deepEqual(http.calls.map((c) => `${c.method} ${new URL(c.url).pathname}`), ['GET /ready', 'POST /v1/detect', 'POST /v1/report']);
   assert.ok(http.calls.slice(1).every((c) => c.token === 'tok'));

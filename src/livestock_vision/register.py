@@ -1,6 +1,6 @@
 """Register a fine-tuned model from a Kaggle run so the Vision API can serve it.
 
-  python -m livestock_vision.register --run-dir runs/kaggle/server --version server-livestock-weak-v1 [--models-dir models]
+  python -m livestock_vision.register --run-dir runs/kaggle/server --version livestock-v1 [--models-dir models]
 
 Reads the run's best.pt + run_summary.json and writes   models/<version>/{best.pt, model_card.json, labels.json}
 and updates shared/model_manifest.json. Prints the environment variables that make the API serve it.

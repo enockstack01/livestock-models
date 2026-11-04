@@ -1,4 +1,4 @@
-"""Start the Vision API on a registered model:  python -m livestock_vision.serve --version server-weak-v1 [--dev]
+"""Start the Vision API on a registered model:  python -m livestock_vision.serve --version livestock-v1 [--dev]
 
 Reads models/<version>/{best.pt, labels.json, model_card.json} (written by livestock_vision.register) and sets the environment the
 service expects, so you do not have to juggle variables. Authentication stays ON:

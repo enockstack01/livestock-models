@@ -33,7 +33,7 @@ def make_run(tmp_path, summary=None):
 def test_register_writes_card_labels_and_manifest(tmp_path):
     man = tmp_path / "manifest.json"
     man.write_text(json.dumps({"server": {"version": None}, "yolo11n": {"latest": None}}))
-    r = register(make_run(tmp_path), "server-weak-v1", tmp_path / "models", man)
+    r = register(make_run(tmp_path), "livestock-v1", tmp_path / "models", man)
     out = Path(r["dir"])
     labels = json.loads((out / "labels.json").read_text())
     status = {c["name"]: c["status"] for c in labels["classes"]}
@@ -45,7 +45,7 @@ def test_register_writes_card_labels_and_manifest(tmp_path):
     assert card["metrics"]["mAP50"] == 0.91 and card["thresholds"] == {} and "not tuned" in card["thresholds_note"].lower()
     assert any("foot_and_mouth_disease" in w and "cannot detect" in w for w in card["warnings"])      # untrained class is called out
     assert len(card["weights_sha256"]) == 64
-    assert json.loads(man.read_text())["server"]["version"] == "server-weak-v1"
+    assert json.loads(man.read_text())["server"]["version"] == "livestock-v1"
     assert set(r["env"]) == {"VISION_WEIGHTS", "VISION_MODEL_VERSION", "VISION_MODEL_CARD", "LABELS_PATH"}
 
 
@@ -83,7 +83,7 @@ class Fake:
 
 
 def test_api_serves_a_registered_model_and_flags_notifiable(tmp_path):
-    r = register(make_run(tmp_path), "server-weak-v1", tmp_path / "models", tmp_path / "m.json")
+    r = register(make_run(tmp_path), "livestock-v1", tmp_path / "models", tmp_path / "m.json")
     env = r["env"]
     s = Settings(data_dir=tmp_path / "d", jwt_secret="s", labels_path=Path(env["LABELS_PATH"]), model_card_path=env["VISION_MODEL_CARD"],
                  model_version=env["VISION_MODEL_VERSION"])
@@ -93,7 +93,7 @@ def test_api_serves_a_registered_model_and_flags_notifiable(tmp_path):
         img = io.BytesIO()
         Image.fromarray(np.random.default_rng(0).integers(0, 255, (200, 300, 3), dtype=np.uint8)).save(img, "JPEG")
         j = c.post("/v1/detect", files={"image": ("a.jpg", img.getvalue(), "image/jpeg")}, headers={"Authorization": f"Bearer {tok}"}).json()
-        assert j["flags"] == ["possible_notifiable_disease"] and j["model_version"] == "server-weak-v1"
+        assert j["flags"] == ["possible_notifiable_disease"] and j["model_version"] == "livestock-v1"
         info = c.get("/v1/model", headers={"Authorization": f"Bearer {tok}"}).json()
         assert info["metrics"]["mAP50"] == 0.91
         assert {x["name"]: x["status"] for x in info["classes"]}["foot_and_mouth_disease"] == "untrained"

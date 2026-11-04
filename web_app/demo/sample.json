@@ -1,7 +1,7 @@
 {
  "detection": {
   "diagnosis_id": "lv_0d80a40248ef",
-  "model_version": "server-weak-v1",
+  "model_version": "livestock-v1",
   "species": "cattle",
   "detections": [
    {
