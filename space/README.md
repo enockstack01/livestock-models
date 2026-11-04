@@ -1,5 +1,5 @@
 ---
-title: Livestock YOLO11x
+title: Livestock Health Detector
 emoji: 🐄
 colorFrom: green
 colorTo: yellow
@@ -11,5 +11,5 @@ license: agpl-3.0
 short_description: Cattle health / lumpy skin / FMD detector (demo model)
 ---
 
-Demo of `yolo11x-weak-v1` ([model](https://huggingface.co/enockstack/livestock-yolo11x), [code](https://github.com/enockstack01/livestock-models)) on ZeroGPU.
+Livestock health detector demo running on ZeroGPU ([code](https://github.com/enockstack01/livestock-models)).
 Weak whole-animal labels: it does not find lesions and is not for field or veterinary decisions.

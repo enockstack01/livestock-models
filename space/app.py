@@ -1,4 +1,4 @@
-"""ZeroGPU demo of the fine-tuned YOLO11x livestock model."""
+"""ZeroGPU demo of the fine-tuned livestock health detector."""
 import os
 
 import gradio as gr
@@ -14,7 +14,7 @@ except ImportError:                                   # running locally without 
 
 WEIGHTS = "best.pt"                                   # bundled in the Space repo, so no token is needed at runtime
 if not os.path.exists(WEIGHTS):                       # local development: fetch from the model repo (needs a token while it is private)
-    WEIGHTS = hf_hub_download(os.environ.get("MODEL_REPO", "enockstack/livestock-yolo11x"), "best.pt", token=os.environ.get("HF_TOKEN"))
+    WEIGHTS = hf_hub_download(os.environ["MODEL_REPO"], "best.pt", token=os.environ.get("HF_TOKEN"))
 model = YOLO(WEIGHTS)                                 # loaded on CPU; moved to the GPU inside _infer()
 
 REPORTABLE = {"foot_and_mouth_disease", "lumpy_skin_disease"}
@@ -42,8 +42,8 @@ def predict(image, conf):
     return (image, boxes), msg
 
 
-with gr.Blocks(title="Livestock YOLO11x") as demo:
-    gr.Markdown("# Livestock health detector (YOLO11x, demo)")
+with gr.Blocks(title="Livestock Health Detector") as demo:
+    gr.Markdown("# Livestock health detector")
     with gr.Row():
         inp = gr.Image(type="pil", label="Photo of the animal")
         out = gr.AnnotatedImage(label="Detections")
